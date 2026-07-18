@@ -4,7 +4,9 @@ set -eu
 host=$(hostname)
 repo=${NIXOS_CONFIG_DIR:-"$HOME/nixos-configs"}
 
+git -C ~/nixos-configs pull --ff-only
+
 echo "Updating all flake inputs in $repo..."
-nix flake update --flake "$repo"
+sudo nix flake update --flake "$repo"
 
 exec sudo nixos-rebuild switch --flake "$repo#$host" "$@"

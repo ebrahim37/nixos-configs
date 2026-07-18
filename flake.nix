@@ -101,7 +101,7 @@
 		in
 		{
 			nixosConfigurations = {
-				pc-vmware = mkHost { hostName = "pc-vmware"; system = "x86_64-linux"; };
+				pc-vbox = mkHost { hostName = "pc-vbox"; system = "x86_64-linux"; };
 				mba-utm = mkHost { hostName = "mba-utm"; system = "aarch64-linux"; };
 			};
 		};

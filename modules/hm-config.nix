@@ -1,7 +1,6 @@
 {
 	config,
 	homeFiles,
-	lib,
 	osConfig,
 	pkgs,
 	publicVars,
@@ -11,11 +10,6 @@ let
 	userName = publicVars.user_short_name;
 in
 {
-	xdg.configFile."uwsm/env-hyprland".text = lib.optionalString
-		(osConfig.networking.hostName == "pc-vmware") ''
-		export AQ_NO_MODIFIERS=1
-	'';
-
 	home = {
 		username = userName;
 		homeDirectory = "/home/${userName}";
@@ -162,7 +156,7 @@ in
 			};
 
 			cursor.no_hardware_cursors =
-				if osConfig.networking.hostName == "pc-vmware" then 1 else 2;
+				if osConfig.networking.hostName == "pc-vbox" then 1 else 2;
 
 			general = {
 				gaps_out = 10;

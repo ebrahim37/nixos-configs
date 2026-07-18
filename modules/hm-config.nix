@@ -8,6 +8,11 @@
 }:
 let
 	userName = publicVars.user_short_name;
+	noctaliaCommand =
+		if osConfig.networking.hostName == "pc-vmware" then
+			"env LIBGL_ALWAYS_SOFTWARE=1 noctalia --daemon"
+		else
+			"noctalia --daemon";
 in
 {
 	home = {
@@ -149,14 +154,14 @@ in
 		settings = {
 			"$mod" = "SUPER";
 			monitor = [ ",preferred,auto,1" ];
-			exec-once = [ "noctalia --daemon" ];
+			exec-once = [ noctaliaCommand ];
 
 			input = {
 				touchpad.natural_scroll = true;
 			};
 
 			cursor.no_hardware_cursors =
-				if osConfig.networking.hostName == "pc-vbox" then 1 else 2;
+				if osConfig.networking.hostName == "pc-vmware" then 1 else 2;
 
 			general = {
 				gaps_out = 10;

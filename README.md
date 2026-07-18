@@ -2,14 +2,14 @@
 
 This flake defines a config for two hosts:
 
-- `pc-vbox`: `x86_64-linux`, Oracle VirtualBox on Windows 11 with VirtualBox Guest Additions.
+- `pc-vmware`: `x86_64-linux`, VMware Workstation Pro on Windows 11, PVSCSI, VMXNET3, SVGA3D, and open-vm-tools.
 - `mba-utm`: `aarch64-linux`, UTM's QEMU backend on an M2 Mac, VirtIO devices/GPU, SPICE agent, and QEMU guest agent.
 
 `modules/common.nix` contains system-wide shared options only; user configuration is isolated in `modules/hm-config.nix`.
 
 ## VM settings
 
-For VirtualBox, use UEFI firmware, add a TPM 2.0 device, use a SATA disk, select the VMSVGA graphics controller with 128 MB video memory, and enable 3D acceleration. The Linux guest will use VirtualBox Guest Additions from NixOS.
+For VMware, use UEFI firmware, add a TPM 2.0 device, enable 3D acceleration, select the PVSCSI storage controller, and use VMXNET3 networking. Noctalia uses software rendering on this host to avoid the VMware GLES compatibility issue; the compositor and other applications remain hardware accelerated.
 
 For UTM, create an ARM64 Linux VM with the QEMU backend and hardware virtualization enabled. Use UEFI, TPM 2.0, a VirtIO block/SCSI disk, VirtIO networking, a SPICE display, and `virtio-gpu-gl`/OpenGL acceleration.
 
@@ -27,7 +27,7 @@ From a recent NixOS minimal ISO, clone this repository to `~/nixos-configs`, add
 
 ```sh
 cd ~/nixos-configs
-sudo ./install.sh pc-vbox /dev/sda USERNAME_HERE
+sudo ./install.sh pc-vmware /dev/sda USERNAME_HERE
 # or:
 sudo ./install.sh mba-utm /dev/vda USERNAME_HERE
 ```

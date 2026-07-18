@@ -23,14 +23,17 @@
     "infra-template": {
       "flake": false,
       "locked": {
-        "lastModified": 1784071439,
-        "narHash": "sha256-oLgJWHGbRmBP7AguwQeh+N7aCYDIBZE1sbJzSjluZe8=",
-        "type": "tarball",
-        "url": "https://api.github.com/repositories/1291500475/tarball/main"
+        "lastModified": 1784353854,
+        "narHash": "sha256-2PbSGQZy0InVf/c21UQ5jLbaaTRyGzSc8dIY4ZTYi8s=",
+        "owner": "ebrahim37",
+        "repo": "infra-template",
+        "rev": "19aa5d9133fdd93ed718d44fc5d813548de1535b",
+        "type": "github"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://api.github.com/repositories/1291500475/tarball/main"
+        "owner": "ebrahim37",
+        "repo": "infra-template",
+        "type": "github"
       }
     },
     "nixpkgs": {

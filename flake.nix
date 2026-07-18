@@ -3,7 +3,7 @@
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
 		infra-template = {
-			url = "tarball+https://api.github.com/repositories/1291500475/tarball/main";
+			url = "github:ebrahim37/infra-template";
 			flake = false;
 		};
 

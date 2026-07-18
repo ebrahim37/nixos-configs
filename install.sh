@@ -51,10 +51,10 @@ cryptsetup open "$ROOT_PARTITION" cryptroot
 opened=true
 
 mkfs.ext4 -F -L nixos /dev/mapper/cryptroot
-mount /dev/disk/by-label/nixos /mnt
+mount /dev/mapper/cryptroot /mnt
 mounted=true
 mkdir -p /mnt/boot
-mount /dev/disk/by-label/BOOT /mnt/boot
+mount "$EFI_PARTITION" /mnt/boot
 
 # sops-nix needs the key during nixos-install activation
 install -D -m 0600 "$AGE_KEY_SOURCE" /mnt/var/lib/sops-nix/key.txt

@@ -4,6 +4,7 @@
 	system.stateVersion = "26.05";
 
 	boot = {
+		loader.efi.canTouchEfiVariables = false;
 		initrd.availableKernelModules = [
 			"ahci"
 			"nvme"
@@ -18,11 +19,21 @@
 			"virtio_scsi"
 			"xhci_pci"
 		];
+		initrd.luks.devices.cryptroot.crypttabExtraOpts = [
+			"tpm2-device=auto"
+			"tpm2-pcrs=7"
+		];
 		kernelModules = [
 			"virtio_balloon"
 			"virtio_console"
 			"virtio_gpu"
 		];
+	};
+
+	security.tpm2 = {
+		enable = true;
+		pkcs11.enable = true;
+		tctiEnvironment.enable = true;
 	};
 
 	services.qemuGuest.enable = true;

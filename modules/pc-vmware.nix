@@ -4,6 +4,7 @@
 	system.stateVersion = "26.05";
 
 	boot = {
+		loader.efi.canTouchEfiVariables = false;
 		initrd = {
 			availableKernelModules = [
 				"ahci"
@@ -12,8 +13,6 @@
 				"nvme"
 				"sd_mod"
 				"sr_mod"
-				"tpm_tis"
-				"tpm_crb"
 				"usb_storage"
 				"vmw_pvscsi"
 				"vmxnet3"

@@ -1,5 +1,4 @@
 {
-	config,
 	homeFiles,
 	inputs,
 	pkgs,
@@ -32,17 +31,12 @@ in
 	boot = {
 		loader = {
 			systemd-boot.enable = true;
-			efi.canTouchEfiVariables = true;
 			timeout = 1;
 		};
 		initrd = {
 			systemd.enable = true;
 			luks.devices.cryptroot = {
 				device = "/dev/disk/by-partlabel/nixos-luks";
-				crypttabExtraOpts = [
-					"tpm2-device=auto"
-					"tpm2-pcrs=7"
-				];
 			};
 		};
 		tmp.cleanOnBoot = true;
@@ -102,11 +96,6 @@ in
 		polkit.enable = true;
 		rtkit.enable = true;
 		sudo.wheelNeedsPassword = false;
-		tpm2 = {
-			enable = true;
-			pkcs11.enable = true;
-			tctiEnvironment.enable = true;
-		};
 	};
 
 	services = {

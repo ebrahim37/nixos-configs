@@ -102,6 +102,7 @@
 		{
 			nixosConfigurations = {
 				pc-vmware = mkHost { hostName = "pc-vmware"; system = "x86_64-linux"; };
+				pc-qemu = mkHost { hostName = "pc-qemu"; system = "x86_64-linux"; };
 				mba-utm = mkHost { hostName = "mba-utm"; system = "aarch64-linux"; };
 			};
 		};

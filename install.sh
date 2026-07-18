@@ -74,12 +74,16 @@ install -d -m 0755 -o 1000 -g 100 "/mnt/home/$INSTALL_USER/nixos-configs"
 cp -a "$REPO_ROOT/." "/mnt/home/$INSTALL_USER/nixos-configs/"
 chown -R 1000:100 "/mnt/home/$INSTALL_USER/nixos-configs"
 
-echo "Enrolling the virtual TPM for automatic LUKS unlock (PCR 7)."
-echo "Enter the LUKS recovery passphrase when prompted."
-systemd-cryptenroll \
-  --tpm2-device=auto \
-  --tpm2-pcrs=7 \
-  "$ROOT_PARTITION"
+if [[ "$HOST_NAME" == "mba-utm" ]]; then
+  echo "Enrolling the virtual TPM for automatic LUKS unlock (PCR 7)."
+  echo "Enter the LUKS recovery passphrase when prompted."
+  systemd-cryptenroll \
+    --tpm2-device=auto \
+    --tpm2-pcrs=7 \
+    "$ROOT_PARTITION"
+else
+  echo "Skipping TPM enrollment for $HOST_NAME; LUKS will prompt for its passphrase at boot."
+fi
 
 sync
 umount -R /mnt
@@ -89,4 +93,4 @@ opened=false
 trap - ERR INT TERM
 
 echo "Installation complete. Remove the ISO and reboot."
-echo "Keep the LUKS recovery passphrase: it remains usable if TPM unlock fails."
+echo "Keep the LUKS recovery passphrase: it is required for recovery and for hosts without TPM unlock."

@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+port=${1:?usage: http PORT [http-server options]}
+shift
+
+exec http-server "$@" \
+	--port "$port" \
+	--log-ip \
+	--robots

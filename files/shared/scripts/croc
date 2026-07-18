@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+runtime_dir=${XDG_RUNTIME_DIR:-/tmp}
+mkdir -p "$runtime_dir/croc-config"
+
+export CROC_CONFIG_DIR="$runtime_dir/croc-config"
+export CROC_SECRET="$(cat /run/secrets/enc_priv_croc_secret)"
+export CROC_PASS="$(cat /run/secrets/enc_priv_croc_pass)"
+
+exec croc --disable-clipboard --relay "vps1.ebra.dev:53889" "$@"

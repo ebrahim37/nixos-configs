@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+host=$(hostname)
+repo=${NIXOS_CONFIG_DIR:-"$HOME/nixos-configs"}
+
+echo "Updating all flake inputs in $repo..."
+nix flake update --flake "$repo"
+
+exec sudo nixos-rebuild switch --flake "$repo#$host" "$@"

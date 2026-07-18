@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+croc_secret=$(cat /run/secrets/enc_priv_croc_secret)
+croc_pass=$(cat /run/secrets/enc_priv_croc_pass)
+
+sudo mkdir -p /run/croc-root
+exec sudo env \
+	CROC_CONFIG_DIR=/run/croc-root \
+	CROC_SECRET="$croc_secret" \
+	CROC_PASS="$croc_pass" \
+	croc --disable-clipboard --relay "vps1.ebra.dev:53889" "$@"

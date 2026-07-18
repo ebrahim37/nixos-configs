@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+port=${1:?usage: phttp PORT [http-server options]}
+shift
+
+exec http-server "$@" \
+  --address 100.64.0.22 \
+  --port "$port" \
+  --log-ip \
+  --robots

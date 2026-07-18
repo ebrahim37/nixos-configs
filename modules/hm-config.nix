@@ -179,7 +179,6 @@ in
 			};
 
 			dwindle = {
-				pseudotile = true;
 				preserve_split = true;
 			};
 
@@ -202,7 +201,7 @@ in
 				"$mod, COMMA, exec, noctalia msg settings-toggle"
 				"$mod SHIFT, E, exit"
 				"$mod, P, pseudo"
-				"$mod, J, togglesplit"
+				"$mod, J, layoutmsg, togglesplit"
 				"$mod, left, movefocus, l"
 				"$mod, right, movefocus, r"
 				"$mod, up, movefocus, u"
@@ -241,9 +240,9 @@ in
 			];
 
 			layerrule = [
-				"blur, namespace:^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
-				"ignore_alpha 0.5, namespace:^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
-				"no_anim, namespace:^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
+				"blur on, match:namespace ^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
+				"ignore_alpha 0.5, match:namespace ^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
+				"no_anim on, match:namespace ^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
 			];
 
 			windowrule = [

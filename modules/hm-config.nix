@@ -1,6 +1,7 @@
 {
 	config,
 	homeFiles,
+	lib,
 	osConfig,
 	pkgs,
 	publicVars,
@@ -10,6 +11,11 @@ let
 	userName = publicVars.user_short_name;
 in
 {
+	xdg.configFile."uwsm/env-hyprland".text = lib.optionalString
+		(osConfig.networking.hostName == "pc-vmware") ''
+		export AQ_NO_MODIFIERS=1
+	'';
+
 	home = {
 		username = userName;
 		homeDirectory = "/home/${userName}";

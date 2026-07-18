@@ -75,6 +75,7 @@
 
 					cp -R ${./files/shared}/. "$out/"
 					cp -R ${hostFiles}/. "$out/"
+					find "$out/scripts" -type f -exec chmod 0755 {} +
 				'';
 			in
 			nixpkgs.lib.nixosSystem {

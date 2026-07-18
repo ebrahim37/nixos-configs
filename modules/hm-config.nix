@@ -125,7 +125,6 @@ in
 		};
 		noctalia = {
 			enable = true;
-			systemd.enable = true;
 			settings = {
 				shell = {
 					launch_apps_as_systemd_services = true;
@@ -150,10 +149,14 @@ in
 		settings = {
 			"$mod" = "SUPER";
 			monitor = [ ",preferred,auto,1" ];
+			exec-once = [ "noctalia --daemon" ];
 
 			input = {
 				touchpad.natural_scroll = true;
 			};
+
+			cursor.no_hardware_cursors =
+				if osConfig.networking.hostName == "pc-vmware" then 1 else 2;
 
 			general = {
 				gaps_out = 10;

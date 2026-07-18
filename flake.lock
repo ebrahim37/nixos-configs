@@ -25,15 +25,12 @@
       "locked": {
         "lastModified": 1784071439,
         "narHash": "sha256-oLgJWHGbRmBP7AguwQeh+N7aCYDIBZE1sbJzSjluZe8=",
-        "owner": "ebrahim37",
-        "repo": "infra-template",
-        "rev": "0023e24cd255e8aaa4ff3830f51a3f8e1e236572",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://api.github.com/repositories/1291500475/tarball/main"
       },
       "original": {
-        "owner": "ebrahim37",
-        "repo": "infra-template",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://api.github.com/repositories/1291500475/tarball/main"
       }
     },
     "nixpkgs": {

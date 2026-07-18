@@ -3,8 +3,13 @@
 	homeFiles,
 	inputs,
 	pkgs,
+	publicVars,
 	...
 }:
+let
+	userName = publicVars.user_short_name;
+	userHome = "/home/${userName}";
+in
 {
 	nixpkgs.config.allowUnfree = true;
 
@@ -79,10 +84,10 @@
 	time.timeZone = "America/Toronto";
 
 	users = {
-		users.ebrahim = {
+		users.${userName} = {
 			isNormalUser = true;
 			uid = 1000;
-			description = "Ebrahim";
+			description = publicVars.user_long_name;
 			extraGroups = [
 				"audio"
 				"networkmanager"
@@ -252,31 +257,29 @@
 				mode = "0444";
 			};
 			enc_priv_ssh_private_key = {
-				owner = "ebrahim";
+				owner = userName;
 				group = "users";
 				mode = "0600";
-				path = "/home/ebrahim/.ssh/id_ed25519";
+				path = "${userHome}/.ssh/id_ed25519";
 			};
-			env_priv_git_credentials = {
-				owner = "ebrahim";
+			enc_priv_git_credentials = {
+				owner = userName;
 				group = "users";
 				mode = "0600";
-				path = "/home/ebrahim/.config/git/credentials";
+				path = "${userHome}/.config/git/credentials";
 			};
 			enc_priv_croc_pass = {
-				owner = "ebrahim";
+				owner = userName;
 				group = "users";
 				mode = "0400";
 			};
 			enc_priv_croc_secret = {
-				owner = "ebrahim";
+				owner = userName;
 				group = "users";
 				mode = "0400";
 			};
 		};
 	};
 
-	services.openssh.authorizedKeysFiles = [
-		"/run/secrets/ssh_public_key"
-	];
+	services.openssh.authorizedKeysFiles = [ "/run/secrets/ssh_public_key" ];
 }

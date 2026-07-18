@@ -1,6 +1,6 @@
 # NixOS Configs
 
-This flake define a config for two hosts:
+This flake defines a config for two hosts:
 
 - `pc-vmware`: `x86_64-linux`, VMware Workstation Pro on Windows 11, PVSCSI, VMXNET3, SVGA3D, and open-vm-tools.
 - `mba-utm`: `aarch64-linux`, UTM's QEMU backend on an M2 Mac, VirtIO devices/GPU, SPICE agent, and QEMU guest agent.
@@ -19,18 +19,22 @@ TPM enrollment binds to PCR 7. Keep the LUKS passphrase recorded somewhere safe;
 
 The installer expects both `secrets.yaml` and `~/.config/sops/age/keys.txt` on the live ISO.
 
+Secret values in `secrets.yaml` are prefixed with `enc_priv_` and these are automatically encrypted by `sops`.
+
 ## Install
 
 From a recent NixOS minimal ISO, clone this repository to `~/nixos-configs`, add the age key and encrypted secrets as described above, then run:
 
 ```sh
 cd ~/nixos-configs
-sudo ./install.sh pc-vmware /dev/sda
+sudo ./install.sh pc-vmware /dev/sda USERNAME_HERE
 # or:
-sudo ./install.sh mba-utm /dev/vda
+sudo ./install.sh mba-utm /dev/vda USERNAME_HERE
 ```
 
-After login, rebuild the current host with `rebuild-nixos`.
+The third argument must match `user_short_name` in `secrets.yaml`.
+
+After install, you can rebuild the current host with `rebuild-nixos`.
 
 ## Key bindings
 

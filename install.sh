@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-[[ $# -eq 2 ]] || { echo "Usage: sudo $0 <hostname> </dev/disk>" >&2; exit 2; }
+[[ $# -eq 3 ]] || { echo "Usage: sudo $0 <hostname> </dev/disk> <user-short-name>" >&2; exit 2; }
 
 HOST_NAME=$1
 INSTALL_DISK=$2
+INSTALL_USER=$3
 REPO_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 AGE_KEY_SOURCE=${SUDO_USER:+/home/$SUDO_USER}/.config/sops/age/keys.txt
 
@@ -61,17 +62,17 @@ install -D -m 0600 "$AGE_KEY_SOURCE" /mnt/var/lib/sops-nix/key.txt
 echo "Installing $HOST_NAME from $REPO_ROOT..."
 nixos-install --flake "$REPO_ROOT#$HOST_NAME" --no-root-passwd
 
-install -d -m 0755 -o 1000 -g 100 /mnt/home/ebrahim/.config
-install -d -m 0700 -o 1000 -g 100 /mnt/home/ebrahim/.config/sops
-install -d -m 0700 -o 1000 -g 100 /mnt/home/ebrahim/.config/sops/age
-install -m 0600 -o 1000 -g 100 "$AGE_KEY_SOURCE" /mnt/home/ebrahim/.config/sops/age/keys.txt
+install -d -m 0755 -o 1000 -g 100 "/mnt/home/$INSTALL_USER/.config"
+install -d -m 0700 -o 1000 -g 100 "/mnt/home/$INSTALL_USER/.config/sops"
+install -d -m 0700 -o 1000 -g 100 "/mnt/home/$INSTALL_USER/.config/sops/age"
+install -m 0600 -o 1000 -g 100 "$AGE_KEY_SOURCE" "/mnt/home/$INSTALL_USER/.config/sops/age/keys.txt"
 
-echo "Set the local login password for ebrahim."
-nixos-enter --root /mnt -c 'passwd ebrahim'
+echo "Set the local login password for $INSTALL_USER."
+nixos-enter --root /mnt -c "passwd $INSTALL_USER"
 
-install -d -m 0755 -o 1000 -g 100 /mnt/home/ebrahim/nixos-configs
-cp -a "$REPO_ROOT/." /mnt/home/ebrahim/nixos-configs/
-chown -R 1000:100 /mnt/home/ebrahim/nixos-configs
+install -d -m 0755 -o 1000 -g 100 "/mnt/home/$INSTALL_USER/nixos-configs"
+cp -a "$REPO_ROOT/." "/mnt/home/$INSTALL_USER/nixos-configs/"
+chown -R 1000:100 "/mnt/home/$INSTALL_USER/nixos-configs"
 
 echo "Enrolling the virtual TPM for automatic LUKS unlock (PCR 7)."
 echo "Enter the LUKS recovery passphrase when prompted."

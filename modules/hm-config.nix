@@ -3,12 +3,16 @@
 	homeFiles,
 	osConfig,
 	pkgs,
+	publicVars,
 	...
 }:
+let
+	userName = publicVars.user_short_name;
+in
 {
 	home = {
-		username = "ebrahim";
-		homeDirectory = "/home/ebrahim";
+		username = userName;
+		homeDirectory = "/home/${userName}";
 		stateVersion = osConfig.system.stateVersion;
 		sessionPath = [ "$HOME/scripts" ];
 		packages = with pkgs; [
@@ -57,7 +61,7 @@
 		};
 		firefox = {
 			enable = true;
-			profiles.ebrahim = {
+			profiles.${userName} = {
 				id = 0;
 				isDefault = true;
 				settings."toolkit.legacyUserProfileCustomizations.stylesheets" = true;
@@ -79,8 +83,8 @@
 			enable = true;
 			settings = {
 				user = {
-					name = "Ebrahim";
-					email = "53321702+ebrahim37@users.noreply.github.com";
+					name = publicVars.user_long_name;
+					email = publicVars.git_email;
 				};
 				credential.helper = "store --file ~/.config/git/credentials";
 				init.defaultBranch = "main";

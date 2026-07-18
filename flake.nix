@@ -3,7 +3,7 @@
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
 		infra-template = {
-			url = "github:ebrahim37/infra-template";
+			url = "tarball+https://api.github.com/repositories/1291500475/tarball/main";
 			flake = false;
 		};
 
@@ -28,7 +28,30 @@
 
 	outputs =
 		inputs@{home-manager, infra-template, nixpkgs, self, sops-nix, ...}:
-		let mkHost = { hostName, system }:
+		let
+			secretLines = builtins.filter builtins.isString (
+				builtins.split "\n" (builtins.readFile ./secrets.yaml)
+			);
+			getPublicVar = name:
+				let
+					values = builtins.filter (value: value != null) (
+						builtins.map (
+							line:
+							let match = builtins.match "${name}: (.*)" line;
+							in if match == null then null else builtins.head match
+						) secretLines
+					);
+				in
+				if builtins.length values == 1 then
+					builtins.head values
+				else
+					throw "Expected exactly one ${name} entry in secrets.yaml";
+			publicVars = {
+				user_short_name = getPublicVar "user_short_name";
+				user_long_name = getPublicVar "user_long_name";
+				git_email = getPublicVar "git_email";
+			};
+			mkHost = { hostName, system }:
 			let
 				pkgs = nixpkgs.legacyPackages.${system};
 				hostFiles = ./files + "/${hostName}";
@@ -56,7 +79,7 @@
 			in
 			nixpkgs.lib.nixosSystem {
 				inherit system;
-				specialArgs = { inherit homeFiles inputs self; };
+				specialArgs = { inherit homeFiles inputs publicVars self; };
 				modules = [
 					sops-nix.nixosModules.sops
 					home-manager.nixosModules.home-manager
@@ -67,9 +90,9 @@
 							useGlobalPkgs = true;
 							useUserPackages = true;
 							backupFileExtension = "hm-backup";
-							extraSpecialArgs = { inherit homeFiles inputs self; };
+							extraSpecialArgs = { inherit homeFiles inputs publicVars self; };
 							sharedModules = [ inputs.noctalia.homeModules.default ];
-							users.ebrahim = import ./modules/hm-config.nix;
+							users.${publicVars.user_short_name} = import ./modules/hm-config.nix;
 						};
 					}
 				];

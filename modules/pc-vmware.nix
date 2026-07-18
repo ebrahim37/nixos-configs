@@ -31,7 +31,4 @@
 	};
 
 	virtualisation.vmware.guest.enable = true;
-
-	# keep the VMware virtual GPU on its accelerated Mesa path
-	environment.variables.AQ_NO_ATOMIC = "1";
 }

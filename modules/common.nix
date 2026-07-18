@@ -247,6 +247,10 @@ in
 			enableSystemSlice = true;
 			enableUserSlices = true;
 		};
+		tmpfiles.rules = [
+			"d ${userHome}/.ssh 0700 ${userName} users - -"
+			"d ${userHome}/.config/git 0700 ${userName} users - -"
+		];
 	};
 
 	sops = {

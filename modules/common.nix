@@ -115,7 +115,11 @@ in
 			pulse.enable = true;
 		};
 		printing.enable = true;
-		tailscale.enable = true;
+		tailscale = {
+			enable = true;
+			useRoutingFeatures = "both";
+			extraSetFlags = [ "--advertise-exit-node" ];
+		};
 		udisks2.enable = true;
 		gnome.gnome-keyring.enable = true;
 	};
@@ -203,6 +207,7 @@ in
 			screen
 			spotiflac
 			unrar
+			unzip
 			uv
 			vim
 			vlc

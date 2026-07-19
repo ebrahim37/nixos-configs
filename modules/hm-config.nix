@@ -42,6 +42,9 @@ in
 	programs = {
 		bash = {
 			enable = true;
+			initExtra = ''
+				PS1='\[\e[31m\][\[\e[33m\]\u\[\e[32m\]@\[\e[34m\]\h \[\e[35m\]\W\[\e[31m\]]\[\e[m\]\$ '
+			'';
 			shellAliases = {
 				nvim = "nvi";
 				sc = "systemctl --user";

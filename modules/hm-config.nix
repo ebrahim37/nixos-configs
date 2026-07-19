@@ -164,7 +164,7 @@ in
 			};
 
 			cursor.no_hardware_cursors =
-				if osConfig.networking.hostName == "pc-vmware" then 1 else 2;
+				if osConfig.networking.hostName == "pc-qemu" then 1 else 2;
 
 			general = {
 				gaps_out = 10;

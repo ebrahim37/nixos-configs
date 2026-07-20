@@ -133,6 +133,11 @@ in
 
 			prefer-no-csd
 
+			cursor {
+				xcursor-theme "Bibata-Modern-Ice"
+				xcursor-size 24
+			}
+
 			hotkey-overlay {
 				skip-at-startup
 			}

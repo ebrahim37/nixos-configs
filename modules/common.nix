@@ -184,6 +184,7 @@ in
 		};
 		etc."vimrc".source = homeFiles + "/vimrc";
 		systemPackages = with pkgs; [
+			bibata-cursors
 			btop
 			bubblewrap
 			bun

@@ -23,11 +23,11 @@
     "infra-template": {
       "flake": false,
       "locked": {
-        "lastModified": 1784452736,
-        "narHash": "sha256-erAYiieJSM52AD2Gap57D2esLojdye+X9Rg/lxQQ8Yk=",
+        "lastModified": 1784494480,
+        "narHash": "sha256-QIh4IledR8GqH7dxsUnV0lWwMv7ZnA0rasJ5GqpLFDs=",
         "owner": "ebrahim37",
         "repo": "infra-template",
-        "rev": "56a1f68d34a4536df57523eb7821a6c24f054e6d",
+        "rev": "df356fa24f5e5708d08c0bed413414ecc6c3334c",
         "type": "github"
       },
       "original": {
@@ -70,11 +70,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1784482325,
-        "narHash": "sha256-u5wnbu0UBxi3uptK8lBy4vYkWtha85vtpWDeQiLdpP8=",
+        "lastModified": 1784518473,
+        "narHash": "sha256-jQYmtnl37gBGmbjUBz/fW2CgQkidf0N9U37auvHrwvE=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "9b54388744e6f3ac2e2dd573a64eef1540c6401c",
+        "rev": "0e36c582e8c445999770340869416a59d081cc05",
         "type": "github"
       },
       "original": {

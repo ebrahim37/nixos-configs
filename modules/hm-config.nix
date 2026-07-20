@@ -153,6 +153,11 @@ in
 				open-floating true
 			}
 
+			window-rule {
+				match app-id=r#"^(firefox|org\.gnome\.Nautilus)$"#
+				open-maximized-to-edges false
+			}
+
 			layer-rule {
 				match namespace=r#"^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"#
 				background-effect {
@@ -166,7 +171,9 @@ in
 				Mod+Return { spawn "footclient"; }
 				Mod+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
 				Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
-				Mod+F { fullscreen-window; }
+				Mod+F { maximize-column; }
+				Mod+M { maximize-window-to-edges; }
+				Mod+Shift+F { fullscreen-window; }
 				Mod+Q repeat=false { close-window; }
 				Mod+L { spawn "noctalia" "msg" "session" "lock"; }
 				Mod+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }

@@ -116,7 +116,10 @@ in
 		tailscale = {
 			enable = true;
 			useRoutingFeatures = "both";
-			extraSetFlags = [ "--advertise-exit-node" ];
+			extraSetFlags = [
+				"--advertise-exit-node"
+				"--operator=${userName}"
+			];
 		};
 		udisks2.enable = true;
 		gnome.gnome-keyring.enable = true;

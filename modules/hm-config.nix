@@ -105,6 +105,7 @@ in
 	};
 
 	systemd.user.startServices = "sd-switch";
+	services.tailscale-systray.enable = true;
 
 	xdg = {
 		enable = true;

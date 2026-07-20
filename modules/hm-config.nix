@@ -115,6 +115,7 @@ in
 					tap
 					natural-scroll
 				}
+				focus-follows-mouse max-scroll-amount="0%"
 			}
 
 			layout {
@@ -178,7 +179,7 @@ in
 				Mod+L { spawn "noctalia" "msg" "session" "lock"; }
 				Mod+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
 				Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
-				Mod+Shift+E { spawn "noctalia" "msg" "panel-toggle" "session"; }
+				Mod+Shift+P { spawn "noctalia" "msg" "panel-toggle" "session"; }
 
 				Mod+Left { focus-column-left; }
 				Mod+Right { focus-column-right; }

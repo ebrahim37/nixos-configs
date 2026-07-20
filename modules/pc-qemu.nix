@@ -4,6 +4,7 @@
 	system.stateVersion = "26.05";
 
 	boot = {
+		loader.efi.canTouchEfiVariables = false;
 		initrd.availableKernelModules = [
 			"ahci"
 			"ehci_pci"
@@ -24,6 +25,7 @@
 			"virtio_gpu"
 		];
 		kernelParams = [ "mitigations=auto" ];
-		loader.efi.canTouchEfiVariables = false;
 	};
+
+	services.qemuGuest.enable = true;
 }

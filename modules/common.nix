@@ -35,9 +35,7 @@ in
 		};
 		initrd = {
 			systemd.enable = true;
-			luks.devices.cryptroot = {
-				device = "/dev/disk/by-partlabel/nixos-luks";
-			};
+			luks.devices.cryptroot.device = "/dev/disk/by-partlabel/nixos-luks";
 		};
 		tmp.cleanOnBoot = true;
 		kernel.sysctl = {
@@ -149,11 +147,7 @@ in
 				};
 			};
 		};
-		hyprland = {
-			enable = true;
-			withUWSM = true;
-			xwayland.enable = true;
-		};
+		niri.enable = true;
 		nix-ld.enable = true;
 	};
 
@@ -161,17 +155,19 @@ in
 		enable = true;
 		xdgOpenUsePortal = true;
 		extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-		config.common.default = [
-			"hyprland"
-			"gtk"
-		];
 	};
 
 	services.greetd = {
 		enable = true;
-		settings.default_session = {
-			user = "greeter";
-			command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --cmd '${pkgs.uwsm}/bin/uwsm start -- hyprland-uwsm.desktop'";
+		settings = {
+			initial_session = {
+				user = userName;
+				command = "${pkgs.niri}/bin/niri-session";
+			};
+			default_session = {
+				user = "greeter";
+				command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --cmd ${pkgs.niri}/bin/niri-session";
+			};
 		};
 	};
 
@@ -212,6 +208,7 @@ in
 			vim
 			vlc
 			wl-clipboard
+			xwayland-satellite
 		];
 	};
 

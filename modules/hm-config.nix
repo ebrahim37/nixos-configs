@@ -1,5 +1,4 @@
 {
-	config,
 	homeFiles,
 	osConfig,
 	pkgs,
@@ -8,13 +7,12 @@
 }:
 let
 	userName = publicVars.user_short_name;
-	noctaliaCommand =
-		if osConfig.networking.hostName == "pc-vmware" then
-			"env LIBGL_ALWAYS_SOFTWARE=1 noctalia --daemon"
-		else
-			"noctalia --daemon";
 in
 {
+	dconf.settings."org/gnome/desktop/interface" = {
+		color-scheme = "prefer-dark";
+	};
+
 	home = {
 		username = userName;
 		homeDirectory = "/home/${userName}";
@@ -22,8 +20,6 @@ in
 		sessionPath = [ "$HOME/scripts" ];
 		packages = with pkgs; [
 			foot
-			hyprlock
-			hyprshot
 		];
 
 		file = {
@@ -72,7 +68,9 @@ in
 			profiles.${userName} = {
 				id = 0;
 				isDefault = true;
-				settings."toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+				settings = {
+					"toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+				};
 			};
 		};
 		foot = {
@@ -100,171 +98,123 @@ in
 			};
 		};
 		home-manager.enable = true;
-		hyprlock = {
-			enable = true;
-			settings = {
-				general = {
-					immediate_render = true;
-				};
-				background = [
-					{
-						color = "rgb(11111b)";
-						blur_passes = 2;
-					}
-				];
-				input-field = [
-					{
-						size = "300, 50";
-						position = "0, -40";
-						fade_on_empty = false;
-						outline_thickness = 2;
-						placeholder_text = "Password";
-					}
-				];
-				label = [
-					{
-						text = "cmd[update:1000] date '+%H:%M'";
-						font_family = "JetBrainsMono Nerd Font";
-						font_size = 64;
-						position = "0, 90";
-					}
-				];
-			};
-		};
 		noctalia = {
 			enable = true;
-			settings = {
-				shell = {
-					launch_apps_as_systemd_services = true;
-					font_family = "Noto Sans";
-					launcher = {
-						providers.session.global = true;
-					};
-				};
-				theme = {
-					builtin = "Noctalia";
-				};
-			};
+			systemd.enable = true;
 		};
 	};
 
-	wayland.windowManager.hyprland = {
-		enable = true;
-		configType = "hyprlang";
-		package = null;
-		portalPackage = null;
-		systemd.enable = false;
-		settings = {
-			"$mod" = "SUPER";
-			monitor = [ ",preferred,auto,1" ];
-			exec-once = [ noctaliaCommand ];
-
-			input = {
-				touchpad.natural_scroll = true;
-			};
-
-			cursor.no_hardware_cursors =
-				if osConfig.networking.hostName == "pc-qemu" then 1 else 2;
-
-			general = {
-				gaps_out = 10;
-				border_size = 2;
-			};
-
-			decoration = {
-				rounding = 12;
-				blur = {
-					size = 3;
-					passes = 2;
-					vibrancy = 0.17;
-				};
-			};
-
-			animations = {
-				bezier = [ "easeOut,0.16,1,0.3,1" ];
-				animation = [
-					"windows,1,4,easeOut"
-					"fade,1,4,easeOut"
-					"workspaces,1,4,easeOut"
-				];
-			};
-
-			dwindle = {
-				preserve_split = true;
-			};
-
-			misc = {
-				disable_hyprland_logo = true;
-				disable_splash_rendering = true;
-				force_default_wallpaper = 0;
-			};
-
-			bind = [
-				"$mod, E, exec, uwsm app -- nautilus --new-window"
-				"$mod, B, exec, uwsm app -- firefox"
-				"$mod, RETURN, exec, uwsm app -- footclient"
-				"$mod, SPACE, exec, noctalia msg panel-toggle launcher"
-				"$mod, V, exec, noctalia msg panel-toggle clipboard"
-				"$mod, F, fullscreen, 0"
-				"$mod, Q, killactive"
-				"$mod, L, exec, noctalia msg session lock"
-				"$mod, S, exec, noctalia msg panel-toggle control-center"
-				"$mod, COMMA, exec, noctalia msg settings-toggle"
-				"$mod SHIFT, E, exit"
-				"$mod, P, pseudo"
-				"$mod, J, layoutmsg, togglesplit"
-				"$mod, left, movefocus, l"
-				"$mod, right, movefocus, r"
-				"$mod, up, movefocus, u"
-				"$mod, down, movefocus, d"
-				"$mod SHIFT, left, movewindow, l"
-				"$mod SHIFT, right, movewindow, r"
-				"$mod SHIFT, up, movewindow, u"
-				"$mod SHIFT, down, movewindow, d"
-				"$mod, mouse_down, workspace, e+1"
-				"$mod, mouse_up, workspace, e-1"
-				", Print, exec, hyprshot -m output"
-				"$mod, Print, exec, hyprshot -m region"
-				", XF86AudioRaiseVolume, exec, noctalia msg volume-up"
-				", XF86AudioLowerVolume, exec, noctalia msg volume-down"
-				", XF86AudioMute, exec, noctalia msg volume-mute"
-				", XF86MonBrightnessUp, exec, noctalia msg brightness-up"
-				", XF86MonBrightnessDown, exec, noctalia msg brightness-down"
-				"ALT, TAB, exec, noctalia msg window-switcher"
-			]
-			++ (builtins.concatLists (
-				builtins.genList (
-					i:
-					let
-						workspace = toString (i + 1);
-					in
-					[
-						"$mod, ${workspace}, workspace, ${workspace}"
-						"$mod SHIFT, ${workspace}, movetoworkspace, ${workspace}"
-					]
-				) 9
-			));
-
-			bindm = [
-				"$mod, mouse:272, movewindow"
-				"$mod, mouse:273, resizewindow"
-			];
-
-			layerrule = [
-				"blur on, match:namespace ^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
-				"ignore_alpha 0.5, match:namespace ^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
-				"no_anim on, match:namespace ^(noctalia-(bar-.+|notification|dock|panel|attached-panel|osd))$"
-			];
-
-			windowrule = [
-				"float on, match:class dev.noctalia.Noctalia"
-				"size 1080 920, match:class dev.noctalia.Noctalia"
-			];
-		};
-	};
+	systemd.user.startServices = "sd-switch";
 
 	xdg = {
 		enable = true;
+		configFile."noctalia/config.toml".source = ../files/shared/noctalia-config.toml;
+		configFile."niri/config.kdl".text = ''
+			input {
+				touchpad {
+					tap
+					natural-scroll
+				}
+			}
+
+			layout {
+				gaps 10
+				focus-ring {
+					off
+				}
+				border {
+					width 2
+					active-color "#89b4fa"
+					inactive-color "#45475a"
+				}
+			}
+
+			prefer-no-csd
+
+			hotkey-overlay {
+				skip-at-startup
+			}
+
+			screenshot-path "~/Downloads/Screenshot %Y-%m-%d %H-%M-%S.png"
+
+			blur {
+				passes 3
+				offset 3
+				saturation 1.17
+			}
+
+			window-rule {
+				geometry-corner-radius 12
+				clip-to-geometry true
+			}
+
+			window-rule {
+				match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+				open-floating true
+			}
+
+			layer-rule {
+				match namespace=r#"^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"#
+				background-effect {
+					xray false
+				}
+			}
+
+			binds {
+				Mod+E { spawn "nautilus" "--new-window"; }
+				Mod+B { spawn "firefox"; }
+				Mod+Return { spawn "footclient"; }
+				Mod+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
+				Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
+				Mod+F { fullscreen-window; }
+				Mod+Q repeat=false { close-window; }
+				Mod+L { spawn "noctalia" "msg" "session" "lock"; }
+				Mod+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+				Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
+				Mod+Shift+E { quit; }
+
+				Mod+Left { focus-column-left; }
+				Mod+Right { focus-column-right; }
+				Mod+Up { focus-window-up; }
+				Mod+Down { focus-window-down; }
+				Mod+Shift+Left { move-column-left; }
+				Mod+Shift+Right { move-column-right; }
+				Mod+Shift+Up { move-window-up; }
+				Mod+Shift+Down { move-window-down; }
+
+				Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+				Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+
+				Mod+1 { focus-workspace 1; }
+				Mod+2 { focus-workspace 2; }
+				Mod+3 { focus-workspace 3; }
+				Mod+4 { focus-workspace 4; }
+				Mod+5 { focus-workspace 5; }
+				Mod+6 { focus-workspace 6; }
+				Mod+7 { focus-workspace 7; }
+				Mod+8 { focus-workspace 8; }
+				Mod+9 { focus-workspace 9; }
+				Mod+Shift+1 { move-column-to-workspace 1; }
+				Mod+Shift+2 { move-column-to-workspace 2; }
+				Mod+Shift+3 { move-column-to-workspace 3; }
+				Mod+Shift+4 { move-column-to-workspace 4; }
+				Mod+Shift+5 { move-column-to-workspace 5; }
+				Mod+Shift+6 { move-column-to-workspace 6; }
+				Mod+Shift+7 { move-column-to-workspace 7; }
+				Mod+Shift+8 { move-column-to-workspace 8; }
+				Mod+Shift+9 { move-column-to-workspace 9; }
+
+				Print { screenshot-screen; }
+				Mod+Print { screenshot; }
+
+				XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-up"; }
+				XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-down"; }
+				XF86AudioMute allow-when-locked=true { spawn "noctalia" "msg" "volume-mute"; }
+				XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia" "msg" "brightness-up"; }
+				XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia" "msg" "brightness-down"; }
+				Alt+Tab repeat=false { spawn "noctalia" "msg" "window-switcher"; }
+			}
+		'';
 		mimeApps = {
 			enable = true;
 			defaultApplications = {

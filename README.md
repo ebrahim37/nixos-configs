@@ -2,14 +2,14 @@
 
 This flake defines a config for two hosts:
 
-- `pc-vmware`: `x86_64-linux`, VMware Workstation Pro on Windows 11, PVSCSI, VMXNET3, SVGA3D, and open-vm-tools.
+- `pc-qemu`: `x86_64-linux`, QEMU with WHPX on Windows 11, VirtIO devices/GPU, SDL display, and QEMU guest agent.
 - `mba-utm`: `aarch64-linux`, UTM's QEMU backend on an M2 Mac, VirtIO devices/GPU, SPICE agent, and QEMU guest agent.
 
 `modules/common.nix` contains system-wide shared options only; user configuration is isolated in `modules/hm-config.nix`.
 
 ## VM settings
 
-For VMware, use UEFI firmware, add a TPM 2.0 device, enable 3D acceleration, select the PVSCSI storage controller, and use VMXNET3 networking. Noctalia uses software rendering on this host to avoid the VMware GLES compatibility issue; the compositor and other applications remain hardware accelerated.
+For QEMU on Windows, use UEFI firmware, VirtIO block/network/GPU devices, OpenGL acceleration, and the low-latency SDL display. The guest enables `qemu-guest-agent`; using it from the Windows host requires exposing an `org.qemu.guest_agent.0` virtio-serial channel. The guest agent is optional and does not affect display or input behavior.
 
 For UTM, create an ARM64 Linux VM with the QEMU backend and hardware virtualization enabled. Use UEFI, TPM 2.0, a VirtIO block/SCSI disk, VirtIO networking, a SPICE display, and `virtio-gpu-gl`/OpenGL acceleration.
 
@@ -27,8 +27,8 @@ From a recent NixOS minimal ISO, clone this repository to `~/nixos-configs`, add
 
 ```sh
 cd ~/nixos-configs
-sudo ./install.sh pc-vmware /dev/sda USERNAME_HERE
-# or:
+sudo ./install.sh pc-qemu /dev/vda USERNAME_HERE
+# or, for UTM:
 sudo ./install.sh mba-utm /dev/vda USERNAME_HERE
 ```
 

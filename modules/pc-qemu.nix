@@ -12,6 +12,7 @@
 			"sd_mod"
 			"sr_mod"
 			"usb_storage"
+			"usbhid"
 			"virtio_blk"
 			"virtio_gpu"
 			"virtio_net"
@@ -20,6 +21,7 @@
 			"xhci_pci"
 		];
 		kernelModules = [
+			"snd_virtio"
 			"virtio_balloon"
 			"virtio_console"
 			"virtio_gpu"

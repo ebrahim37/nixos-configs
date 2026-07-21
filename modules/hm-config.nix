@@ -67,10 +67,10 @@ in
 		firefox = {
 			enable = true;
 			package = pkgs.firefox-devedition;
-			profiles.${userName} = {
+			profiles."dev-edition-default" = {
 				id = 0;
-				isDefault = true;
 				settings = {
+					"browser.aboutConfig.showWarning" = false;
 					"toolkit.legacyUserProfileCustomizations.stylesheets" = true;
 				};
 			};

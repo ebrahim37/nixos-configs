@@ -28,4 +28,5 @@
 	};
 
 	services.qemuGuest.enable = true;
+	services.fstrim.enable = true;
 }

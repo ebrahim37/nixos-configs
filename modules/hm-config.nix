@@ -1,5 +1,6 @@
 {
 	homeFiles,
+	inputs,
 	osConfig,
 	pkgs,
 	publicVars,
@@ -31,7 +32,7 @@ in
 				source = homeFiles + "/.config/nvim";
 				recursive = true;
 			};
-			".ssh/config".source = homeFiles + "/ssh_config";
+			".ssh/config".source = inputs.infra-template + "/shared/ssh_config";
 		};
 	};
 
@@ -65,6 +66,7 @@ in
 		};
 		firefox = {
 			enable = true;
+			package = pkgs.firefox-devedition;
 			profiles.${userName} = {
 				id = 0;
 				isDefault = true;
@@ -109,7 +111,7 @@ in
 
 	xdg = {
 		enable = true;
-		configFile."noctalia/config.toml".source = ../files/shared/noctalia-config.toml;
+		configFile."noctalia/config.toml".source = ../files/noctalia-config.toml;
 		configFile."niri/config.kdl".text = ''
 			input {
 				touchpad {
@@ -156,12 +158,12 @@ in
 			}
 
 			window-rule {
-				match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+				match app-id=r#"firefox-devedition$"# title="^Picture-in-Picture$"
 				open-floating true
 			}
 
 			window-rule {
-				match app-id=r#"^(firefox|org\.gnome\.Nautilus)$"#
+				match app-id=r#"^(firefox-devedition|org\.gnome\.Nautilus)$"#
 				open-maximized-to-edges false
 			}
 
@@ -174,7 +176,7 @@ in
 
 			binds {
 				Mod+E { spawn "nautilus" "--new-window"; }
-				Mod+B { spawn "firefox"; }
+				Mod+B { spawn "firefox-devedition"; }
 				Mod+Return { spawn "footclient"; }
 				Mod+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
 				Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
@@ -251,9 +253,9 @@ in
 
 				"inode/directory" = [ "org.gnome.Nautilus.desktop" ];
 
-				"text/html" = [ "firefox.desktop" ];
-				"x-scheme-handler/http" = [ "firefox.desktop" ];
-				"x-scheme-handler/https" = [ "firefox.desktop" ];
+				"text/html" = [ "firefox-devedition.desktop" ];
+				"x-scheme-handler/http" = [ "firefox-devedition.desktop" ];
+				"x-scheme-handler/https" = [ "firefox-devedition.desktop" ];
 			};
 		};
 	};

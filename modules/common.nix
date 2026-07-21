@@ -1,5 +1,4 @@
 {
-	homeFiles,
 	inputs,
 	pkgs,
 	publicVars,
@@ -139,6 +138,7 @@ in
 		dconf.enable = true;
 		firefox = {
 			enable = true;
+			package = pkgs.firefox-devedition;
 			policies.ExtensionSettings = {
 				"uBlock0@raymondhill.net" = {
 					installation_mode = "normal_installed";
@@ -182,7 +182,7 @@ in
 			NIXOS_OZONE_WL = "1";
 			TERMINAL = "footclient";
 		};
-		etc."vimrc".source = homeFiles + "/vimrc";
+		etc."vimrc".source = inputs.infra-template + "/shared/vimrc";
 		systemPackages = with pkgs; [
 			bibata-cursors
 			btop
@@ -194,7 +194,7 @@ in
 			eza
 			feishin
 			file-roller
-			firefox
+			firefox-devedition
 			git
 			http-server
 			imv

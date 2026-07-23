@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+if [ "$#" -eq 1 ]; then
+	exec tailscale set \
+		--advertise-exit-node=false \
+		--exit-node="$1"
+fi
+
+exec tailscale set \
+	--advertise-exit-node \
+	--exit-node=

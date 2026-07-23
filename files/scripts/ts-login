@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+exec sudo tailscale login \
+	--login-server=https://headscale.ebra.dev \
+	--operator="$USER" \
+	--accept-routes \
+	--advertise-exit-node

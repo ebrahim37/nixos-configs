@@ -198,6 +198,7 @@ in
 			git
 			http-server
 			imv
+			jellyfin-desktop
 			nautilus
 			ncdu
 			neovim

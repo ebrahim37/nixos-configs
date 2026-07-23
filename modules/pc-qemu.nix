@@ -31,4 +31,18 @@
 
 	services.qemuGuest.enable = true;
 	services.fstrim.enable = true;
+
+	nixpkgs.overlays = [
+		(final: prev: {
+			jellyfin-desktop = prev.jellyfin-desktop.overrideAttrs (old: {
+				nativeBuildInputs =
+					(old.nativeBuildInputs or [ ])
+					++ [ final.makeWrapper ];
+				postFixup = (old.postFixup or "") + ''
+					wrapProgram "$out/bin/jellyfin-desktop" \
+						--set VK_ICD_FILENAMES /dev/null
+				'';
+			});
+		})
+	];
 }

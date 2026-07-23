@@ -115,9 +115,8 @@ in
 		tailscale = {
 			enable = true;
 			useRoutingFeatures = "both";
-			extraSetFlags = [
-				"--advertise-exit-node"
-				"--operator=${userName}"
+			extraDaemonFlags = [
+				"--config=/etc/tailscale/config.json"
 			];
 		};
 		udisks2.enable = true;
@@ -168,7 +167,20 @@ in
 			NIXOS_OZONE_WL = "1";
 			TERMINAL = "footclient";
 		};
-		etc."vimrc".source = inputs.infra-template + "/shared/vimrc";
+		etc = {
+			"tailscale/config.json".text = builtins.toJSON {
+				version = "alpha0";
+				serverURL = "https://headscale.ebra.dev";
+				operatorUser = userName;
+				acceptRoutes = true;
+				advertiseRoutes = [
+					"0.0.0.0/0"
+					"::/0"
+				];
+				locked = false;
+			};
+			"vimrc".source = inputs.infra-template + "/shared/vimrc";
+		};
 		systemPackages = with pkgs; [
 			bibata-cursors
 			btop

@@ -7,6 +7,12 @@
 let
 	userName = publicVars.user_short_name;
 	userHome = "/home/${userName}";
+	systemVim = pkgs.vim.overrideAttrs (oldAttrs: {
+		postInstall = (oldAttrs.postInstall or "") + ''
+			chmod u+w "$out/share/vim/vimrc"
+			cat ${inputs.infra-template}/shared/vimrc >> "$out/share/vim/vimrc"
+		'';
+	});
 in
 {
 	nixpkgs.config.allowUnfree = true;
@@ -169,7 +175,6 @@ in
 			NIXOS_OZONE_WL = "1";
 			TERMINAL = "footclient";
 		};
-		etc."vimrc".source = inputs.infra-template + "/shared/vimrc";
 		systemPackages = with pkgs; [
 			bibata-cursors
 			btop
@@ -193,10 +198,10 @@ in
 			ripgrep
 			screen
 			spotiflac
+			systemVim
 			unrar
 			unzip
 			uv
-			vim
 			vlc
 			wl-clipboard
 			xwayland-satellite

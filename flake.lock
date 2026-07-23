@@ -23,11 +23,11 @@
     "infra-template": {
       "flake": false,
       "locked": {
-        "lastModified": 1784769948,
-        "narHash": "sha256-CaeFdJHaXQZnmms8+Zvm0SSx/uorG/p9n/K5VTUPkx0=",
+        "lastModified": 1784826280,
+        "narHash": "sha256-0QlwVbfNo78fW0IcltdM4zXqJ9Zil3sEP4wA2W9ZWxE=",
         "owner": "ebrahim37",
         "repo": "infra-template",
-        "rev": "17cc4b23ccf4c64c1426a3d3f5102c4f4f1394f9",
+        "rev": "39690a9e069d7c716f44b0c3195204cb3d6d5b72",
         "type": "github"
       },
       "original": {

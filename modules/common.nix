@@ -74,8 +74,23 @@ in
 	};
 
 	networking = {
-		networkmanager.enable = true;
 		firewall.enable = false;
+		networkmanager = {
+			enable = true;
+			dispatcherScripts = [
+				{
+					type = "basic";
+					source = pkgs.writeShellScript "50-tailscale-udp-gro" ''
+						if [ "$2" != "up" ]; then
+							exit 0
+						fi
+
+						NETDEV="$(${pkgs.iproute2}/bin/ip -o route get 8.8.8.8 | ${pkgs.coreutils}/bin/cut -f 5 -d " ")"
+						"${pkgs.ethtool}/sbin/ethtool" -K "$NETDEV" rx-udp-gro-forwarding on rx-gro-list off
+					'';
+				}
+			];
+		};
 	};
 
 	time.timeZone = "America/Toronto";
@@ -183,6 +198,7 @@ in
 			codex
 			croc
 			cryptsetup
+			ethtool
 			eza
 			feishin
 			file-roller

@@ -47,5 +47,8 @@
 	services.spice-vdagentd.enable = true;
 	services.fstrim.enable = true;
 
-	environment.systemPackages = [ pkgs.spice-vdagent ];
+	environment.systemPackages = with pkgs; [
+		clang-tools
+		spice-vdagent
+	];
 }

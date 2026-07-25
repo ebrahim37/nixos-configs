@@ -71,10 +71,12 @@ in
 				"uBlock0@raymondhill.net" = {
 					installation_mode = "normal_installed";
 					install_url = "https://addons.mozilla.org/firefox/downloads/latest/uBlock0@raymondhill.net/latest.xpi";
+					private_browsing = true;
 				};
 				"{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
 					installation_mode = "normal_installed";
 					install_url = "https://addons.mozilla.org/firefox/downloads/latest/{446900e4-71c2-419f-a6a7-df9c091e268b}/latest.xpi";
+					private_browsing = true;
 				};
 			};
 			profiles."dev-edition-default" = {

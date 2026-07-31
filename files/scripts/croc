@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-runtime_dir=${XDG_RUNTIME_DIR:-/tmp}
+runtime_dir=${XDG_RUNTIME_DIR:-/var/tmp}
 mkdir -p "$runtime_dir/croc-config"
 
 export CROC_CONFIG_DIR="$runtime_dir/croc-config"

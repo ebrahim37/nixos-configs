@@ -61,12 +61,12 @@
 					chmod -R u+w "$out"
 
 					rm -f \
+						"$out/scripts/codex" \
 						"$out/scripts/croc.jinja" \
-						"$out/scripts/scroc.jinja" \
-						"$out/scripts/http" \
 						"$out/scripts/list-services" \
 						"$out/scripts/run-host" \
 						"$out/scripts/run-host-root" \
+						"$out/scripts/scroc.jinja" \
 						"$out/scripts/start-services" \
 						"$out/scripts/stop-services" \
 						"$out/scripts/update-cnc" \

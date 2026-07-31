@@ -260,11 +260,11 @@ in
 				"image/gif" = [ "imv.desktop" ];
 				"image/jpeg" = [ "imv.desktop" ];
 				"image/png" = [ "imv.desktop" ];
-				"image/svg+xml" = [ "imv.desktop" ];
 				"image/webp" = [ "imv.desktop" ];
 
 				"inode/directory" = [ "org.gnome.Nautilus.desktop" ];
 
+				"image/svg+xml" = [ "firefox-devedition.desktop" ];
 				"text/html" = [ "firefox-devedition.desktop" ];
 				"x-scheme-handler/http" = [ "firefox-devedition.desktop" ];
 				"x-scheme-handler/https" = [ "firefox-devedition.desktop" ];

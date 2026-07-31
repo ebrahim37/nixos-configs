@@ -194,7 +194,6 @@ in
 			bibata-cursors
 			btop
 			bubblewrap
-			bun
 			codex
 			croc
 			cryptsetup
@@ -211,6 +210,7 @@ in
 			neovim
 			nodejs
 			pavucontrol
+			pnpm
 			ripgrep
 			screen
 			spotiflac

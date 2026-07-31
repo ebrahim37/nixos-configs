@@ -113,7 +113,12 @@ in
 	security = {
 		polkit.enable = true;
 		rtkit.enable = true;
-		sudo.wheelNeedsPassword = false;
+		sudo = {
+			wheelNeedsPassword = false;
+			extraConfig = ''
+				Defaults env_keep += "SYSTEMD_PAGER"
+			'';
+		};
 	};
 
 	services = {
@@ -188,6 +193,7 @@ in
 		variables = {
 			EDITOR = "nvi";
 			NIXOS_OZONE_WL = "1";
+			SYSTEMD_PAGER = "cat";
 			TERMINAL = "footclient";
 		};
 		systemPackages = with pkgs; [

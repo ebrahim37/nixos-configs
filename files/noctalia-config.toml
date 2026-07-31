@@ -158,6 +158,9 @@ enabled = false
 [widget.clock]
 format = "{:%l:%M %p}"
 
+[widget.control-center]
+enabled = false
+
 [widget.date]
 format = "{:%A %B %d}"
 

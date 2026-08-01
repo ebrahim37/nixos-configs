@@ -61,6 +61,7 @@
 					chmod -R u+w "$out"
 
 					rm -f \
+						"$out/scripts/btop" \
 						"$out/scripts/codex" \
 						"$out/scripts/croc.jinja" \
 						"$out/scripts/list-services" \

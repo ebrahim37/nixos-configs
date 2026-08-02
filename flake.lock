@@ -23,11 +23,11 @@
     "infra-template": {
       "flake": false,
       "locked": {
-        "lastModified": 1785577585,
-        "narHash": "sha256-inpMgMb0RJ92Po7MsIAldWW/CL0HuHiZQol2Y12Qxlc=",
+        "lastModified": 1785636503,
+        "narHash": "sha256-cJVrfzHnDV64v28nVGm4IwOZeFPx+SpomyJIvJYFWOQ=",
         "owner": "ebrahim37",
         "repo": "infra-template",
-        "rev": "c2627fe3ba3a6ef860f292c4a000bfd6b0489c52",
+        "rev": "bf040db374a10dbc74f6b817c9292e162eef870a",
         "type": "github"
       },
       "original": {
@@ -54,11 +54,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1784796856,
-        "narHash": "sha256-vwxWgF+Gj276WznzGb1LxGsK/39HaQwgQXiU3EkC844=",
-        "rev": "e2587caef70cea85dd97d7daab492899902dbf5d",
+        "lastModified": 1785571196,
+        "narHash": "sha256-xwSqxTsama0YTtS78+4YyCm6jJg09v78QWfP1cAyoVA=",
+        "rev": "148bab9c1c3c53136ecb44a6ea356a0ed5b39b06",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1040357.e2587caef70c/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1045728.148bab9c1c3c/nixexprs.tar.xz"
       },
       "original": {
         "type": "tarball",
@@ -70,11 +70,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1785614863,
-        "narHash": "sha256-1+3qap1e9txUbbI1MzTDLt5I3krAosO4nAgFfs/lW3E=",
+        "lastModified": 1785634012,
+        "narHash": "sha256-SGCOi518BbLc+8qfIJucpU440jOqSJy8U+6U5rdb7Ps=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "726b1d3e56dab716f44a1fff180b157676e322ba",
+        "rev": "feaed19d94af5ae45290ec0b43bae280e6e2e9c1",
         "type": "github"
       },
       "original": {

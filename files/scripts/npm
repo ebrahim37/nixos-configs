@@ -1,0 +1,3 @@
+#!/bin/sh
+export npm_config_cache=/var/tmp/npm-cache
+exec /run/current-system/sw/bin/npm "$@"

@@ -65,7 +65,6 @@
 						"$out/scripts/codex" \
 						"$out/scripts/croc.jinja" \
 						"$out/scripts/list-services" \
-						"$out/scripts/npm" \
 						"$out/scripts/run-host" \
 						"$out/scripts/run-host-root" \
 						"$out/scripts/scroc.jinja" \

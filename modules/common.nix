@@ -7,27 +7,9 @@
 let
 	userName = publicVars.user_short_name;
 	userHome = "/home/${userName}";
-	vimArchDefaults = pkgs.writeText "archlinux.vim" ''
-		" Move temporary files to the XDG cache directory.
-		if exists('$XDG_CACHE_HOME')
-			let &g:directory = $XDG_CACHE_HOME
-		else
-			let &g:directory = $HOME . '/.cache'
-		endif
-		let &g:undodir = &g:directory . '/vim/undo//'
-		let &g:backupdir = &g:directory . '/vim/backup//'
-		let &g:directory .= '/vim/swap//'
-
-		for directory in [&g:directory, &g:backupdir, &g:undodir]
-			if !isdirectory(expand(directory))
-				silent! call mkdir(expand(directory), 'p', 0700)
-			endif
-		endfor
-	'';
 	systemVim = pkgs.vim.overrideAttrs (oldAttrs: {
 		postInstall = (oldAttrs.postInstall or "") + ''
 			chmod u+w "$out/share/vim/vimrc"
-			install -Dm644 ${vimArchDefaults} "$out/share/vim/vimfiles/archlinux.vim"
 			cat ${inputs.infra-template}/shared/vimrc >> "$out/share/vim/vimrc"
 		'';
 	});

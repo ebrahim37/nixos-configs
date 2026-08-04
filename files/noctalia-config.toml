@@ -151,6 +151,9 @@ screen_time_enabled = true
 [theme]
 builtin = "Ayu"
 
+[wallpaper.default]
+path = "/home/ebrahim/nixos-configs/files/wallpaper.png"
+
 [widget.clipboard]
 enabled = false
 

@@ -229,6 +229,7 @@ in
 			unzip
 			uv
 			vlc
+			waypipe
 			wl-clipboard
 			xwayland-satellite
 		];

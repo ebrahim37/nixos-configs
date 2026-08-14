@@ -54,24 +54,11 @@
 			mkHost = { hostName, system }:
 			let
 				pkgs = nixpkgs.legacyPackages.${system};
-				homeFiles = pkgs.runCommand "home-files-${hostName}" { } ''
+				homeFiles = pkgs.runCommand "home-files" { } ''
 					mkdir -p "$out/.config" "$out/scripts"
 					cp -R ${infra-template}/shared/home/.config/nvim "$out/.config/nvim"
-					cp -R ${infra-template}/shared/home/scripts/. "$out/scripts/"
+					cp -R ${infra-template}/shared/scripts/common/. "$out/scripts/"
 					chmod -R u+w "$out"
-
-					rm -f \
-						"$out/scripts/btop" \
-						"$out/scripts/codex" \
-						"$out/scripts/croc.jinja" \
-						"$out/scripts/list-services" \
-						"$out/scripts/run-host" \
-						"$out/scripts/run-host-root" \
-						"$out/scripts/scroc.jinja" \
-						"$out/scripts/start-services" \
-						"$out/scripts/stop-services" \
-						"$out/scripts/update-cnc" \
-						"$out/scripts/update-services"
 
 					cp -R ${./files}/. "$out/"
 					find "$out/scripts" -type f -exec chmod 0755 {} +

@@ -229,7 +229,12 @@ in
 			unzip
 			uv
 			vlc
-			waypipe
+			(waypipe.overrideAttrs (oldAttrs: {
+				# waypipe 0.11 is incompatible with FFmpeg 9's Vulkan API
+				# remove this override once the FFmpeg 8 fix reaches nixos-unstable
+				buildInputs = builtins.filter (input: input != ffmpeg) oldAttrs.buildInputs ++ [ ffmpeg_8 ];
+				runtimeDependencies = builtins.filter (input: input != ffmpeg.lib) oldAttrs.runtimeDependencies ++ [ ffmpeg_8.lib ];
+			}))
 			wl-clipboard
 			xwayland-satellite
 		];
@@ -242,7 +247,6 @@ in
 		packages = with pkgs; [
 			dejavu_fonts
 			font-awesome
-			jetbrains-mono
 			nerd-fonts.jetbrains-mono
 			noto-fonts
 			noto-fonts-color-emoji

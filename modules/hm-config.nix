@@ -41,6 +41,12 @@ in
 			enable = true;
 			initExtra = ''
 				PS1='\[\e[31m\][\[\e[33m\]\u\[\e[32m\]@\[\e[34m\]\h \[\e[35m\]\W\[\e[31m\]]\[\e[m\]\$ '
+
+				__update_foot_title() {
+					local title="''${PWD/#$HOME/~}"
+					printf '\e]2;%s\a' "$title"
+				}
+				PROMPT_COMMAND=(__update_foot_title "''${PROMPT_COMMAND[@]}")
 			'';
 			shellAliases = {
 				nvim = "nvi";

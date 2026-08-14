@@ -63,8 +63,8 @@ widget_order = [ "lockscreen-login-box@Virtual-1" ]
     visible = true
 
     [lockscreen_widgets.widget."lockscreen-login-box@Virtual-1"]
-    box_height = 70.0
-    box_width = 400.0
+    box_height = 196.0
+    box_width = 720.0
     cx = 1720.0
     cy = 1250.0
     output = "Virtual-1"
@@ -78,9 +78,14 @@ widget_order = [ "lockscreen-login-box@Virtual-1" ]
         center_password_text = false
         input_opacity = 1.0
         input_radius = 6.0
+        layout = "regular"
         show_caps_lock = true
         show_keyboard_layout = true
         show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
 
 [nightlight]
 enabled = true
@@ -150,6 +155,8 @@ screen_time_enabled = true
 
 [theme]
 builtin = "Ayu"
+mode = "dark"
+source = "builtin"
 
 [wallpaper.default]
 path = "/home/ebrahim/nixos-configs/files/wallpaper.png"

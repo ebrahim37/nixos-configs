@@ -133,6 +133,7 @@ in
 				PermitRootLogin = "no";
 				PasswordAuthentication = false;
 				KbdInteractiveAuthentication = false;
+				X11Forwarding = true;
 			};
 		};
 		pipewire = {
@@ -169,6 +170,7 @@ in
 		dconf.enable = true;
 		niri.enable = true;
 		nix-ld.enable = true;
+		ssh.setXAuthLocation = true;
 	};
 
 	xdg.portal = {
@@ -236,6 +238,7 @@ in
 				runtimeDependencies = builtins.filter (input: input != ffmpeg.lib) oldAttrs.runtimeDependencies ++ [ ffmpeg_8.lib ];
 			}))
 			wl-clipboard
+			xauth
 			xwayland-satellite
 		];
 	};

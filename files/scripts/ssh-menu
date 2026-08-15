@@ -11,9 +11,10 @@ choice="$({
 	printf '8\tpc-qemu\n'
 	printf '9\tmba-utm\n'
 } | fuzzel --dmenu \
-	--with-nth='{2}' \
+	--with-nth='{1} {2}' \
 	--match-nth='{1}' \
 	--accept-nth='{2}' \
+	--hide-prompt \
 	--auto-select)" || exit 0
 
 [[ -n "$choice" ]] || exit 0

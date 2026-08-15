@@ -26,9 +26,10 @@ choice="$({
 	printf '4\tpc-qemu\t100.64.0.21\n'
 	printf '5\tmba-utm\t100.64.0.22\n'
 } | fuzzel --dmenu \
-	--with-nth='{2}' \
+	--with-nth='{1} {2}' \
 	--match-nth='{1}' \
 	--accept-nth='{2} {3}' \
+	--hide-prompt \
 	--auto-select)" || exit 0
 
 read -r hostname tailnet_ip <<< "$choice"

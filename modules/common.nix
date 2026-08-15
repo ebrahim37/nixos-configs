@@ -10,7 +10,7 @@ let
 	systemVim = pkgs.vim.overrideAttrs (oldAttrs: {
 		postInstall = (oldAttrs.postInstall or "") + ''
 			chmod u+w "$out/share/vim/vimrc"
-			cat ${inputs.infra-template}/shared/vimrc >> "$out/share/vim/vimrc"
+			cat ${inputs.infra-template}/cnc-shared/vimrc >> "$out/share/vim/vimrc"
 		'';
 	});
 in

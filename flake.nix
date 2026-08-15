@@ -56,8 +56,8 @@
 				pkgs = nixpkgs.legacyPackages.${system};
 				homeFiles = pkgs.runCommand "home-files" { } ''
 					mkdir -p "$out/.config" "$out/scripts"
-					cp -R ${infra-template}/shared/home/.config/nvim "$out/.config/nvim"
-					cp -R ${infra-template}/shared/scripts/common/. "$out/scripts/"
+					cp -R ${infra-template}/cnc-shared/home/.config/nvim "$out/.config/nvim"
+					cp -R ${infra-template}/cnc-shared/scripts/common/. "$out/scripts/"
 					chmod -R u+w "$out"
 
 					cp -R ${./files}/. "$out/"

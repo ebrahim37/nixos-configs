@@ -33,7 +33,7 @@ in
 				source = homeFiles + "/.config/nvim";
 				recursive = true;
 			};
-			".ssh/config".source = inputs.infra-template + "/shared/ssh_config";
+			".ssh/config".source = inputs.infra-template + "/cnc-shared/ssh_config";
 		};
 	};
 

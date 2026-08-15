@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+if [[ "${1-}" == "--connect" ]]; then
+	[[ $# -eq 3 ]] || exit 1
+	hostname="$2"
+	tailnet_ip="$3"
+
+	# tailnet_ip intentionally expands locally before the command is sent
+	# shellcheck disable=SC2029
+	ssh "$hostname" \
+		"nohup ~/scripts/nvi \
+		--cmd 'lua vim.g.clipboard = \"osc52\"' \
+		--headless \
+		--listen '$tailnet_ip:9321' \
+		> /var/tmp/nvim-headless.log 2>&1 < /dev/null &"
+
+	sleep 1
+
+	exec nvi --server "$tailnet_ip:9321" --remote-ui
+fi
+
+choice="$({
+	printf '1\tvps1c\t100.64.0.1\n'
+	printf '2\thomelabc\t100.64.0.2\n'
+	printf '3\toffsitec\t100.64.0.6\n'
+	printf '4\tpc-qemu\t100.64.0.21\n'
+	printf '5\tmba-utm\t100.64.0.22\n'
+} | fuzzel --dmenu \
+	--with-nth='{2}' \
+	--match-nth='{1}' \
+	--accept-nth='{2} {3}' \
+	--auto-select)" || exit 0
+
+read -r hostname tailnet_ip <<< "$choice"
+[[ -n "$hostname" && -n "$tailnet_ip" ]] || exit 0
+
+exec footclient -e remote-nvim-menu --connect "$hostname" "$tailnet_ip"

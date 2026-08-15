@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+choice="$({
+	printf '1\tvps1\n'
+	printf '2\tvps1c\n'
+	printf '3\thomelab\n'
+	printf '4\thomelabc\n'
+	printf '5\toffsite\n'
+	printf '6\toffsitec\n'
+	printf '7\tpc\n'
+	printf '8\tpc-qemu\n'
+	printf '9\tmba-utm\n'
+} | fuzzel --dmenu \
+	--with-nth='{2}' \
+	--match-nth='{1}' \
+	--accept-nth='{2}' \
+	--auto-select)" || exit 0
+
+[[ -n "$choice" ]] || exit 0
+
+exec footclient -e ssh "$choice"

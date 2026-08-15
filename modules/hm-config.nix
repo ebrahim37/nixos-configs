@@ -21,6 +21,7 @@ in
 		sessionPath = [ "$HOME/scripts" ];
 		packages = with pkgs; [
 			foot
+			fuzzel
 		];
 
 		file = {
@@ -196,6 +197,8 @@ in
 				Mod+E { spawn "nautilus" "--new-window"; }
 				Mod+B { spawn "firefox-devedition"; }
 				Mod+Return { spawn "footclient"; }
+				Mod+backslash { spawn "ssh-menu"; }
+				Mod+BackSpace { spawn "remote-nvim-menu"; }
 				Mod+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
 				Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
 				Mod+F { maximize-column; }

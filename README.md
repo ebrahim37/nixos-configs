@@ -41,6 +41,8 @@ After install, you can rebuild the current host with `rebuild-nixos`.
 - `Super+E`: Nautilus
 - `Super+B`: Firefox
 - `Super+Enter`: foot client (using the user foot server)
+- `Super+\`: choose a host with Fuzzel and connect over SSH
+- `Super+Backspace`: choose a host with Fuzzel and attach to remote Neovim
 - `Super+Space`: Noctalia launcher
 - `Super+V`: Noctalia clipboard history
 - `Super+F`: fullscreen

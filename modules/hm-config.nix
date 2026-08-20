@@ -31,8 +31,10 @@ in
 		packages = with pkgs; [
 			foot
 			fuzzel
+			jq
 			libnotify
 			ntfy-sh
+			xdg-utils
 		];
 
 		file = {

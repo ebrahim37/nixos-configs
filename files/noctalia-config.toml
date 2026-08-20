@@ -92,6 +92,9 @@ widget_order = [ "lockscreen-login-box@Virtual-1" ]
 [nightlight]
 enabled = true
 
+[notification]
+show_actions = false
+
 [shell]
 external_ip_enabled = true
 font_family = "Noto Sans"

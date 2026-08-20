@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+case "${NTFY_PRIORITY:-3}" in
+	1|2) urgency="low" ;;
+	3|4) urgency="normal" ;;
+	5) urgency="critical" ;;
+	*) urgency="normal" ;;
+esac
+
+title=${NTFY_TITLE:-}
+if [ -z "$title" ]; then
+	title="ntfy · ${NTFY_TOPIC:-notification}"
+fi
+
+exec notify-send \
+	--app-name="ntfy" \
+	--urgency="$urgency" \
+	"$title" \
+	"${NTFY_MESSAGE:-}"

@@ -8,6 +8,15 @@
 }:
 let
 	userName = publicVars.user_short_name;
+	# Add topics here to have them forwarded to Noctalia.
+	ntfyTopics = [ "email" ];
+	ntfyConfig = (pkgs.formats.yaml { }).generate "ntfy-client.yml" {
+		default-host = "http://100.64.0.1:2586";
+		subscribe = map (topic: {
+			inherit topic;
+			command = "/home/${userName}/scripts/ntfy-noctalia-notify";
+		}) ntfyTopics;
+	};
 in
 {
 	dconf.settings."org/gnome/desktop/interface" = {
@@ -22,6 +31,8 @@ in
 		packages = with pkgs; [
 			foot
 			fuzzel
+			libnotify
+			ntfy-sh
 		];
 
 		file = {
@@ -125,11 +136,28 @@ in
 		};
 	};
 
-	systemd.user.startServices = "sd-switch";
+	systemd.user = {
+		startServices = "sd-switch";
+		services.ntfy-noctalia = {
+			Unit = {
+				Description = "Forward ntfy messages to Noctalia notifications";
+				Documentation = "https://docs.ntfy.sh/subscribe/cli/";
+				After = [ "noctalia.service" ];
+				PartOf = [ "graphical-session.target" ];
+			};
+			Service = {
+				ExecStart = "${pkgs.ntfy-sh}/bin/ntfy subscribe --from-config";
+				Restart = "always";
+				RestartSec = 5;
+			};
+			Install.WantedBy = [ "graphical-session.target" ];
+		};
+	};
 	services.tailscale-systray.enable = true;
 
 	xdg = {
 		enable = true;
+		configFile."ntfy/client.yml".source = ntfyConfig;
 		configFile."noctalia/config.toml".source = ../files/noctalia-config.toml;
 		configFile."niri/config.kdl".text = ''
 			input {

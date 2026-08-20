@@ -68,6 +68,8 @@ widget_order = [ "lockscreen-login-box@Virtual-1" ]
     cx = 1720.0
     cy = 1250.0
     output = "Virtual-1"
+    placement_height = 1440.0
+    placement_width = 3440.0
     rotation = 0.0
     type = "login_box"
 
@@ -159,6 +161,12 @@ mode = "dark"
 source = "builtin"
 
 [wallpaper.default]
+path = "/home/ebrahim/nixos-configs/files/wallpaper.png"
+
+[wallpaper.last]
+path = "/home/ebrahim/nixos-configs/files/wallpaper.png"
+
+[wallpaper.monitors.Virtual-1]
 path = "/home/ebrahim/nixos-configs/files/wallpaper.png"
 
 [widget.clipboard]

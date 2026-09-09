@@ -7,6 +7,7 @@
 let
 	userName = publicVars.user_short_name;
 	userHome = "/home/${userName}";
+	stremioEnhanced = pkgs.callPackage ./stremio-enhanced.nix { };
 	systemVim = pkgs.vim.overrideAttrs (oldAttrs: {
 		postInstall = (oldAttrs.postInstall or "") + ''
 			chmod u+w "$out/share/vim/vimrc"
@@ -216,7 +217,6 @@ in
 			git
 			http-server
 			imv
-			jellyfin-desktop
 			nautilus
 			ncdu
 			neovim
@@ -225,7 +225,7 @@ in
 			pnpm
 			ripgrep
 			screen
-			spotiflac
+			stremioEnhanced
 			systemVim
 			unrar
 			unzip

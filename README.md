@@ -52,4 +52,5 @@ After install, you can rebuild the current host with `rebuild-nixos`.
 - `Super+Q`: close window
 - `Super+1` through `Super+9`: select workspace
 - `Super+Shift+1` through `Super+Shift+9`: move window to workspace
+- `Super+J`: open Stremio Enhanced
 - `Print`: full-output screenshot; `Super+Print`: region screenshot

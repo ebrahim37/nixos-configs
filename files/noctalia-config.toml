@@ -178,6 +178,9 @@ enabled = false
 [widget.clock]
 format = "{:%l:%M %p}"
 
+[widget.workspaces]
+hide_when_empty = true
+
 [widget.control-center]
 enabled = false
 

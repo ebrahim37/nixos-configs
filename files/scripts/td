@@ -1,2 +1,47 @@
 #!/bin/sh
-tailscale file get .
+set -eu
+
+receive_files() {
+	destination=${1:-.}
+	mkdir -p "$destination"
+	tailscale file get --wait=false "$destination"
+}
+
+validate_files() {
+	while [ "$#" -gt 1 ]; do
+		[ -f "$1" ] || {
+			echo "td: not a file: $1" >&2
+			exit 1
+		}
+		shift
+	done
+}
+
+send_files() {
+	tailnet_name=
+	for arg do
+		tailnet_name=$arg
+	done
+	[ -n "$tailnet_name" ] || {
+		echo "td: tailnet name cannot be empty" >&2
+		exit 2
+	}
+
+	while [ "$#" -gt 1 ]; do
+		tailscale file cp -- "$1" "$tailnet_name:"
+		shift
+	done
+}
+
+case $# in
+	0)
+		receive_files
+		;;
+	1)
+		receive_files "$1"
+		;;
+	*)
+		validate_files "$@"
+		send_files "$@"
+		;;
+esac

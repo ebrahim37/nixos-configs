@@ -42,6 +42,10 @@ in
 				source = homeFiles + "/scripts";
 				recursive = true;
 			};
+			".local/share/noctalia/plugins/homelab-status" = {
+				source = ../files/noctalia-plugins/homelab-status;
+				recursive = true;
+			};
 			".config/nvim" = {
 				source = homeFiles + "/.config/nvim";
 				recursive = true;

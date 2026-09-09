@@ -204,6 +204,7 @@ in
 			TERMINAL = "footclient";
 		};
 		systemPackages = with pkgs; [
+			age
 			bibata-cursors
 			btop
 			bubblewrap
@@ -225,6 +226,7 @@ in
 			pnpm
 			ripgrep
 			screen
+			sops
 			stremioEnhanced
 			systemVim
 			unrar
@@ -299,6 +301,16 @@ in
 				mode = "0400";
 			};
 			enc_priv_croc_secret = {
+				owner = userName;
+				group = "users";
+				mode = "0400";
+			};
+			enc_priv_headscale_widget_token = {
+				owner = userName;
+				group = "users";
+				mode = "0400";
+			};
+			enc_priv_discord_widget_token = {
 				owner = userName;
 				group = "users";
 				mode = "0400";

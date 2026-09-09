@@ -4,6 +4,8 @@ enable_sounds = true
 [bar.default]
 center = []
 end = [
+    "tailnet-status",
+    "discord-status",
     "media",
     "tray",
     "clipboard",
@@ -95,6 +97,9 @@ enabled = true
 [notification]
 show_actions = false
 
+[plugins]
+enabled = [ "ebrahim/homelab-status" ]
+
 [shell]
 external_ip_enabled = true
 font_family = "Noto Sans"
@@ -184,6 +189,9 @@ enabled = false
 [widget.date]
 format = "{:%A %B %d}"
 
+[widget.discord-status]
+type = "ebrahim/homelab-status:discord"
+
 [widget.launcher]
 enabled = false
 
@@ -192,6 +200,9 @@ enabled = false
 
 [widget.session]
 enabled = false
+
+[widget.tailnet-status]
+type = "ebrahim/homelab-status:tailnet"
 
 [widget.volume]
 enabled = false

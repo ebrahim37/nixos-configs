@@ -1,0 +1,38 @@
+id = "ebrahim/homelab-status"
+name = "Homelab Status"
+version = "1.0.0"
+plugin_api = 3
+author = "ebrahim"
+license = "MIT"
+icon = "server"
+description = "Tailnet device and Discord voice-call status."
+tags = [ "homelab", "headscale", "discord" ]
+dependencies = []
+
+[[widget]]
+id = "tailnet"
+entry = "tailnet-widget.luau"
+
+[[widget]]
+id = "discord"
+entry = "discord-widget.luau"
+
+[[panel]]
+id = "tailnet-details"
+entry = "tailnet-panel.luau"
+width = 380
+height = 460
+placement = "attached"
+open_near_click = true
+
+[[panel]]
+id = "discord-details"
+entry = "discord-panel.luau"
+width = 380
+height = 420
+placement = "attached"
+open_near_click = true
+
+[[service]]
+id = "poller"
+entry = "service.luau"

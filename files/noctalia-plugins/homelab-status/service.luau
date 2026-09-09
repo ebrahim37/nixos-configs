@@ -196,8 +196,11 @@ end
 
 noctalia.state.set("tailnet", { status = "loading", peers = {} })
 noctalia.state.set("discord", { status = "loading", peers = {} })
-noctalia.state.watch("refresh", function()
-  poll()
+noctalia.state.watch("refresh-tailnet", function()
+  pollTailnet()
+end)
+noctalia.state.watch("refresh-discord", function()
+  pollDiscord()
 end)
 noctalia.setUpdateInterval(POLL_INTERVAL_MS)
 poll()

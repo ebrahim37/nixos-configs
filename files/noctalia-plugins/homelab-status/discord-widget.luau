@@ -25,23 +25,13 @@ local function render()
   else
     local tooltip = {}
     for _, peer in ipairs(peers) do
-      local suffix = ""
-      if peer.isMutedOrDeafened then
-        suffix = suffix .. "  MUTED"
-      end
-      if peer.isStreaming then
-        suffix = suffix .. "  LIVE"
-      end
-      table.insert(tooltip, peer.name .. suffix)
+      table.insert(tooltip, peer.name)
 
       table.insert(children, ui.label({
         text = peer.name,
         color = peer.isStreaming and STREAMING_COLOR
           or (peer.isMutedOrDeafened and MUTED_COLOR or "on_surface"),
       }))
-      if peer.isMutedOrDeafened then
-        table.insert(children, ui.glyph({ name = "microphone-off", size = 12, color = MUTED_COLOR }))
-      end
     end
     barWidget.setTooltip(table.concat(tooltip, "\n"))
     barWidget.setVisible(true)
@@ -64,5 +54,6 @@ function update()
 end
 
 function onClick()
-  noctalia.togglePanel("ebrahim/homelab-status:discord-details")
+  local revision = noctalia.state.get("refresh-discord") or 0
+  noctalia.state.set("refresh-discord", revision + 1)
 end

@@ -48,5 +48,6 @@ function update()
 end
 
 function onClick()
-  noctalia.togglePanel("ebrahim/homelab-status:tailnet-details")
+  local revision = noctalia.state.get("refresh-tailnet") or 0
+  noctalia.state.set("refresh-tailnet", revision + 1)
 end

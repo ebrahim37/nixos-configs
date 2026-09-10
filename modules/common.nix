@@ -7,7 +7,7 @@
 let
 	userName = publicVars.user_short_name;
 	userHome = "/home/${userName}";
-	nuvio = pkgs.callPackage ./nuvio.nix { };
+	stremioEnhanced = pkgs.callPackage ./stremio-enhanced.nix { };
 	systemVim = pkgs.vim.overrideAttrs (oldAttrs: {
 		postInstall = (oldAttrs.postInstall or "") + ''
 			chmod u+w "$out/share/vim/vimrc"
@@ -227,7 +227,7 @@ in
 			ripgrep
 			screen
 			sops
-			nuvio
+			stremioEnhanced
 			systemVim
 			unrar
 			unzip

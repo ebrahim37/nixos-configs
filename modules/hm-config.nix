@@ -230,7 +230,7 @@ in
 			binds {
 				Mod+E { spawn "nautilus" "--new-window"; }
 				Mod+B { spawn "firefox-devedition"; }
-				Mod+J { spawn "Nuvio"; }
+				Mod+J { spawn "stremio-enhanced"; }
 				Mod+Return { spawn "footclient"; }
 				Mod+backslash { spawn "ssh-menu"; }
 				Mod+BackSpace { spawn "remote-nvim-menu"; }

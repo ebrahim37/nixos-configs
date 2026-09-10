@@ -36,6 +36,13 @@ The third argument must match `user_short_name` in `secrets.yaml`.
 
 After install, you can rebuild the current host with `rebuild-nixos`.
 
+After changing the Nuvio version or its Gradle dependencies, regenerate the
+offline dependency cache from an x86_64 host:
+
+```sh
+./update-nuvio-deps
+```
+
 ## Key bindings
 
 - `Super+E`: Nautilus
@@ -52,5 +59,5 @@ After install, you can rebuild the current host with `rebuild-nixos`.
 - `Super+Q`: close window
 - `Super+1` through `Super+9`: select workspace
 - `Super+Shift+1` through `Super+Shift+9`: move window to workspace
-- `Super+J`: open Stremio Enhanced
+- `Super+J`: open Nuvio
 - `Print`: full-output screenshot; `Super+Print`: region screenshot

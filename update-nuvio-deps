@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+[[ $# -eq 0 ]] || { echo "Usage: $0" >&2; exit 2; }
+
+REPO_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+cd "$REPO_ROOT"
+
+if [[ $(uname -m) != x86_64 ]]; then
+	echo "update-nuvio-deps must run on an x86_64 Linux host." >&2
+	echo "Its dependency-capture build also records the ARM64 Compose runtime." >&2
+	exit 1
+fi
+
+echo "Resolving the Nuvio dependency updater..."
+UPDATER=$(
+	nix build --no-link --print-out-paths --impure --expr '
+		let
+			flake = builtins.getFlake (toString ./.);
+			pkgs = flake.inputs.nixpkgs.legacyPackages.x86_64-linux;
+			nuvio = pkgs.callPackage ./modules/nuvio.nix { };
+		in
+			nuvio.passthru.updateScript
+	'
+)
+
+echo "Regenerating modules/nuvio-deps.json..."
+"$UPDATER"
+echo "Updated modules/nuvio-deps.json."

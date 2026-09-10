@@ -20,6 +20,7 @@
 	libxinerama,
 	libxrandr,
 	makeDesktopItem,
+	makeWrapper,
 	mpv-unwrapped,
 	pkg-config,
 	stdenv,
@@ -82,13 +83,16 @@ stdenv.mkDerivation (finalAttrs: {
 
 		printf '%s\n' \
 			'NUVIO_SUPABASE_URL=https://api.nuvio.tv' \
-			'NUVIO_SUPABASE_ANON_KEY=sb_publishable_rJ5B7nT5y89wYVhD6cX4qA_0iB2nC3mK' \
-			'NUVIO_SUPABASE_FALLBACK_URL=' \
+			'NUVIO_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzgxNTIxMzQ2LCJleHAiOjE5MzkyMDEzNDZ9.tmQaj682pwzehpqlgCDMnySOqiUvpgRbrE43T4VJpDI' \
+			'NUVIO_SUPABASE_FALLBACK_URL=https://api-two.nuvioapp.space' \
 			> local.properties
 	'';
 
 	# CMake is only used by the vendored native-player build script.
 	dontUseCmakeConfigure = true;
+	# The JPackage launcher must not be renamed: its filename determines which
+	# adjacent .cfg file and launcher library it loads.
+	dontWrapGApps = true;
 
 	gradleBuildTask = ":composeApp:createReleaseDistributable";
 	gradleUpdateTask = finalAttrs.gradleBuildTask;
@@ -110,6 +114,7 @@ stdenv.mkDerivation (finalAttrs: {
 		copyDesktopItems
 		gradle_9
 		jdk17
+		makeWrapper
 		pkg-config
 		wrapGAppsHook3
 	];
@@ -135,17 +140,38 @@ stdenv.mkDerivation (finalAttrs: {
 	installPhase = ''
 		runHook preInstall
 
-		cp -R composeApp/build/compose/binaries/main-release/app/Nuvio "$out"
-		install -Dm644 "$out/lib/Nuvio.png" \
+		# Skiko 0.144.6 rejects every VirGL renderer and falls back to CPU
+		# rendering even when the guest has a working accelerated GL context.
+		# Keep the class-file constant the same length while disabling only that
+		# blacklist entry; all other Skiko adapter checks remain intact.
+		appDir="$PWD/composeApp/build/compose/binaries/main-release/app/Nuvio/lib/app"
+		for skikoJar in "$appDir"/skiko-awt-[0-9]*.jar; do
+			rm -rf skiko-patch
+			mkdir skiko-patch
+			(
+				cd skiko-patch
+				jar xf "$skikoJar" org/jetbrains/skiko/GraphicsApi_jvmKt.class
+			)
+			LC_ALL=C sed -i 's/virgl/vrigl/g' \
+				skiko-patch/org/jetbrains/skiko/GraphicsApi_jvmKt.class
+			grep -a --quiet 'vrigl' skiko-patch/org/jetbrains/skiko/GraphicsApi_jvmKt.class
+			jar uf "$skikoJar" -C skiko-patch org/jetbrains/skiko/GraphicsApi_jvmKt.class
+		done
+
+		mkdir -p "$out/bin" "$out/libexec"
+		cp -R composeApp/build/compose/binaries/main-release/app/Nuvio \
+			"$out/libexec/nuvio"
+		makeWrapper "$out/libexec/nuvio/bin/Nuvio" "$out/bin/Nuvio"
+		install -Dm644 "$out/libexec/nuvio/lib/Nuvio.png" \
 			"$out/share/icons/hicolor/512x512/apps/nuvio.png"
 
 		runHook postInstall
 	'';
 
-	preFixup = ''
-		gappsWrapperArgs+=(
+	postFixup = ''
+		wrapProgram "$out/bin/Nuvio" \
+			"''${gappsWrapperArgs[@]}" \
 			--prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeLibraries}"
-		)
 	'';
 
 	passthru.updateScript = finalAttrs.mitmCache.updateScript;

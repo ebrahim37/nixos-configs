@@ -149,14 +149,14 @@ in
 				Description = "Forward ntfy messages to Noctalia notifications";
 				Documentation = "https://docs.ntfy.sh/subscribe/cli/";
 				After = [ "noctalia.service" ];
-				PartOf = [ "graphical-session.target" ];
+				PartOf = [ "noctalia.service" ];
 			};
 			Service = {
 				ExecStart = "${pkgs.ntfy-sh}/bin/ntfy subscribe --from-config";
 				Restart = "always";
 				RestartSec = 5;
 			};
-			Install.WantedBy = [ "graphical-session.target" ];
+			Install.WantedBy = [ "noctalia.service" ];
 		};
 	};
 	services.tailscale-systray.enable = true;

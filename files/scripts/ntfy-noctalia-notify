@@ -13,6 +13,8 @@ if [ -z "$title" ]; then
 	title="ntfy · ${NTFY_TOPIC:-notification}"
 fi
 
+app_name=${NTFY_TOPIC:-ntfy}
+
 click=
 if [ -n "${NTFY_RAW:-}" ]; then
 	click=$(printf '%s' "$NTFY_RAW" | jq -r '.click // empty' 2>/dev/null) || click=
@@ -22,7 +24,7 @@ case "$click" in
 	http://*|https://*) ;;
 	*)
 		exec notify-send \
-			--app-name="ntfy" \
+			--app-name="$app_name" \
 			--urgency="$urgency" \
 			"$title" \
 			"${NTFY_MESSAGE:-}"
@@ -33,7 +35,7 @@ esac
 # avoid blocking ntfy from delivering subsequent messages.
 (
 	action=$(notify-send \
-		--app-name="ntfy" \
+		--app-name="$app_name" \
 		--urgency="$urgency" \
 		--action="default=Open" \
 		"$title" \

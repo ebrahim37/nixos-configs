@@ -8,7 +8,7 @@
 }:
 let
 	userName = publicVars.user_short_name;
-	ntfyTopics = [ "email", "beszel" ];
+	ntfyTopics = [ "email" "beszel" ];
 	ntfyConfig = (pkgs.formats.yaml { }).generate "ntfy-client.yml" {
 		default-host = "http://100.64.0.1:2586";
 		subscribe = map (topic: {

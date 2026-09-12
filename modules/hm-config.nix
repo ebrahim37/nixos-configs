@@ -8,8 +8,7 @@
 }:
 let
 	userName = publicVars.user_short_name;
-	# Add topics here to have them forwarded to Noctalia.
-	ntfyTopics = [ "email" ];
+	ntfyTopics = [ "email", "beszel" ];
 	ntfyConfig = (pkgs.formats.yaml { }).generate "ntfy-client.yml" {
 		default-host = "http://100.64.0.1:2586";
 		subscribe = map (topic: {

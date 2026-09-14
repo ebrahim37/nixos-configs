@@ -222,6 +222,7 @@ in
 			ncdu
 			neovim
 			nodejs
+			omp
 			pavucontrol
 			pnpm
 			ripgrep
@@ -274,6 +275,19 @@ in
 			"d ${userHome}/.ssh 0700 ${userName} users - -"
 			"d ${userHome}/.config/git 0700 ${userName} users - -"
 		];
+	};
+
+	system.activationScripts.ompConfig = {
+		deps = [
+			"users"
+			"groups"
+		];
+		text = ''
+			${pkgs.coreutils}/bin/install -d -m 0700 -o ${userName} -g users "${userHome}/.config/omp"
+			${pkgs.coreutils}/bin/cp -R ${inputs.infra-template}/cnc-shared/home/.config/omp/. "${userHome}/.config/omp/"
+			${pkgs.coreutils}/bin/chown -R ${userName}:users "${userHome}/.config/omp"
+			${pkgs.coreutils}/bin/chmod -R u=rwX,go= "${userHome}/.config/omp"
+		'';
 	};
 
 	sops = {

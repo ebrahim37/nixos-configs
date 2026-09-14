@@ -165,7 +165,6 @@ in
 			enable = true;
 			systemd.enable = true;
 		};
-		omp.enable = true;
 		tmux = {
 			enable = true;
 			extraConfig = builtins.readFile (inputs.infra-template + "/cnc-shared/home/.config/tmux/tmux.conf");

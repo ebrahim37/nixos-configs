@@ -12,6 +12,11 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 
+		omp = {
+			url = "github:can1357/oh-my-pi/v18.1.22";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -78,7 +83,10 @@
 							useUserPackages = true;
 							backupFileExtension = "hm-backup";
 							extraSpecialArgs = { inherit homeFiles inputs publicVars self; };
-							sharedModules = [ inputs.noctalia.homeModules.default ];
+							sharedModules = [
+								inputs.noctalia.homeModules.default
+								inputs.omp.homeManagerModules.default
+							];
 							users.${publicVars.user_short_name} = import ./modules/hm-config.nix;
 						};
 					}

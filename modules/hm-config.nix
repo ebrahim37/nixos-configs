@@ -37,7 +37,7 @@ in
 		];
 
 		file = {
-			".omp/extensions" = {
+			".omp/agent" = {
 				source = inputs.infra-template + "/cnc-shared/home/.config/omp/extensions";
 				recursive = true;
 			};

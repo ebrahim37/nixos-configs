@@ -277,19 +277,6 @@ in
 		];
 	};
 
-	system.activationScripts.ompConfig = {
-		deps = [
-			"users"
-			"groups"
-		];
-		text = ''
-			${pkgs.coreutils}/bin/install -d -m 0700 -o ${userName} -g users "${userHome}/.config/omp"
-			${pkgs.coreutils}/bin/cp -R ${inputs.infra-template}/cnc-shared/home/.config/omp/. "${userHome}/.config/omp/"
-			${pkgs.coreutils}/bin/chown -R ${userName}:users "${userHome}/.config/omp"
-			${pkgs.coreutils}/bin/chmod -R u=rwX,go= "${userHome}/.config/omp"
-		'';
-	};
-
 	sops = {
 		defaultSopsFile = ../secrets.yaml;
 		age.keyFile = "/var/lib/sops-nix/key.txt";

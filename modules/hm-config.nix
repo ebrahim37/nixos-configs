@@ -8,7 +8,7 @@
 }:
 let
 	userName = publicVars.user_short_name;
-	ntfyTopics = [ "email" "beszel" "monitor" ];
+	ntfyTopics = [ "email" "beszel" "monitor" "omp" ];
 	ntfyConfig = (pkgs.formats.yaml { }).generate "ntfy-client.yml" {
 		default-host = "http://100.64.0.1:2586";
 		subscribe = map (topic: {
@@ -37,6 +37,11 @@ in
 		];
 
 		file = {
+			".omp/extensions" = {
+				source = inputs.infra-template + "/cnc-shared/home/.config/omp/extensions";
+				recursive = true;
+			};
+			".omp/shared.yml".source = inputs.infra-template + "/cnc-shared/home/.config/omp/shared.yml";
 			"scripts" = {
 				source = homeFiles + "/scripts";
 				recursive = true;

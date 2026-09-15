@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+export PI_CONFIG_FILES="$HOME/.omp/shared.yml"
+exec /run/current-system/sw/bin/omp "$@"

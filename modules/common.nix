@@ -8,10 +8,12 @@ let
 	userName = publicVars.user_short_name;
 	userHome = "/home/${userName}";
 	stremioEnhanced = pkgs.callPackage ./stremio-enhanced.nix { };
-	systemVim = pkgs.vim.overrideAttrs (oldAttrs: {
+	systemVim = pkgs.vim-full.overrideAttrs (oldAttrs: {
 		postInstall = (oldAttrs.postInstall or "") + ''
-			chmod u+w "$out/share/vim/vimrc"
-			cat ${inputs.infra-template}/cnc-shared/vimrc >> "$out/share/vim/vimrc"
+			cp --dereference "$out/share/vim/vimrc" "$out/share/vim/vimrc.local"
+			chmod u+w "$out/share/vim/vimrc.local"
+			cat ${inputs.infra-template}/cnc-shared/vimrc >> "$out/share/vim/vimrc.local"
+			mv -T "$out/share/vim/vimrc.local" "$out/share/vim/vimrc"
 		'';
 	});
 in

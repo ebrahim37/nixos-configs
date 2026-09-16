@@ -15,6 +15,7 @@ user_pref("browser.ml.chat.enabled", false);
 user_pref("browser.ml.chat.page", false);
 user_pref("browser.ml.chat.sidebar", false);
 
+user_pref("findbar.highlightAll", true);
 user_pref("browser.uidensity", 1);
 user_pref("browser.aboutConfig.showWarning", false);
 user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);

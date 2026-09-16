@@ -1,15 +1,21 @@
 .browserContainer {
-	display: flex !important;
-	flex-direction: column !important;
-}
-
-.browserContainer > .browserStack {
-	flex: 1 1 auto !important;
-	min-height: 0 !important;
+	grid-template-areas:
+		"devtools-side-start      devtools-side-start-splitter notificationbox          devtools-side-end-splitter  devtools-side-end"
+		"devtools-side-start      devtools-side-start-splitter rdm-toolbar              devtools-side-end-splitter  devtools-side-end"
+		"devtools-side-start      devtools-side-start-splitter findbar                  devtools-side-end-splitter  devtools-side-end"
+		"devtools-side-start      devtools-side-start-splitter browserstack             devtools-side-end-splitter  devtools-side-end"
+		"devtools-bottom-splitter devtools-bottom-splitter     devtools-bottom-splitter devtools-bottom-splitter    devtools-bottom-splitter"
+		"devtools-bottom          devtools-bottom              devtools-bottom          devtools-bottom             devtools-bottom" !important;
+	grid-template-rows:
+		auto
+		var(--rdm-toolbar-height, 0)
+		auto
+		minmax(var(--content-area-min-size), 1fr)
+		auto
+		auto !important;
 }
 
 .browserContainer > findbar {
-	order: -1 !important;
 	border-top: none !important;
 	border-bottom: 1px solid ThreeDShadow !important;
 }

@@ -1,5 +1,15 @@
-.browserContainer>findbar {
-	order: -1;
+.browserContainer {
+	display: flex !important;
+	flex-direction: column !important;
+}
+
+.browserContainer > .browserStack {
+	flex: 1 1 auto !important;
+	min-height: 0 !important;
+}
+
+.browserContainer > findbar {
+	order: -1 !important;
 	border-top: none !important;
 	border-bottom: 1px solid ThreeDShadow !important;
 }

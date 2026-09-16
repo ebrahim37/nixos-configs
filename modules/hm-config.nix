@@ -135,10 +135,8 @@ in
 			};
 			profiles."dev-edition-default" = {
 				id = 0;
-				settings = {
-					"browser.aboutConfig.showWarning" = false;
-					"toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-				};
+				extraConfig = builtins.readFile ../files/firefox/user.js;
+				userChrome = ../files/firefox/chrome/userChrome.css;
 			};
 		};
 		foot = {

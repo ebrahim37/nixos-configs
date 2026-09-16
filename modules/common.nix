@@ -24,14 +24,8 @@ in
 		registry.nixpkgs.flake = inputs.nixpkgs;
 		settings = {
 			auto-optimise-store = true;
-			experimental-features = [
-				"nix-command"
-				"flakes"
-			];
-			trusted-users = [
-				"root"
-				userName
-			];
+			experimental-features = [ "nix-command" "flakes" ];
+			trusted-users = [ "root" userName ];
 		};
 		gc = {
 			automatic = true;
@@ -67,10 +61,7 @@ in
 		"/boot" = {
 			device = "/dev/disk/by-label/BOOT";
 			fsType = "vfat";
-			options = [
-				"fmask=0077"
-				"dmask=0077"
-			];
+			options = [ "fmask=0077" "dmask=0077" ];
 		};
 	};
 
@@ -102,19 +93,11 @@ in
 
 	time.timeZone = "America/Toronto";
 
-	users = {
-		users.${userName} = {
-			isNormalUser = true;
-			uid = 1000;
-			description = publicVars.user_long_name;
-			extraGroups = [
-				"audio"
-				"networkmanager"
-				"podman"
-				"video"
-				"wheel"
-			];
-		};
+	users.users.${userName} = {
+		isNormalUser = true;
+		uid = 1000;
+		description = publicVars.user_long_name;
+		extraGroups = [ "audio" "networkmanager" "podman" "video" "wheel" ];
 	};
 
 	security = {
@@ -138,6 +121,7 @@ in
 				KbdInteractiveAuthentication = false;
 				X11Forwarding = true;
 			};
+			authorizedKeysFiles = [ "/run/secrets/ssh_public_key" ];
 		};
 		pipewire = {
 			enable = true;
@@ -157,12 +141,24 @@ in
 		};
 		udisks2.enable = true;
 		gnome.gnome-keyring.enable = true;
+		greetd = {
+			enable = true;
+			settings = {
+				initial_session = {
+					user = userName;
+					command = "${pkgs.niri}/bin/niri-session";
+				};
+				default_session = {
+					user = "greeter";
+					command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --cmd ${pkgs.niri}/bin/niri-session";
+				};
+			};
+		};
+		locate.enable = true;
 	};
 
 	hardware = {
-		bluetooth = {
-			enable = true;
-		};
+		bluetooth.enable = true;
 		graphics = {
 			enable = true;
 			enable32Bit = pkgs.stdenv.hostPlatform.isx86_64;
@@ -180,20 +176,6 @@ in
 		enable = true;
 		xdgOpenUsePortal = true;
 		extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-	};
-
-	services.greetd = {
-		enable = true;
-		settings = {
-			initial_session = {
-				user = userName;
-				command = "${pkgs.niri}/bin/niri-session";
-			};
-			default_session = {
-				user = "greeter";
-				command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --cmd ${pkgs.niri}/bin/niri-session";
-			};
-		};
 	};
 
 	virtualisation.podman.enable = true;
@@ -236,19 +218,12 @@ in
 			unzip
 			uv
 			vlc
-			(waypipe.overrideAttrs (oldAttrs: {
-				# waypipe 0.11 is incompatible with FFmpeg 9's Vulkan API
-				# remove this override once the FFmpeg 8 fix reaches nixos-unstable
-				buildInputs = builtins.filter (input: input != ffmpeg) oldAttrs.buildInputs ++ [ ffmpeg_8 ];
-				runtimeDependencies = builtins.filter (input: input != ffmpeg.lib) oldAttrs.runtimeDependencies ++ [ ffmpeg_8.lib ];
-			}))
+			waypipe
 			wl-clipboard
 			xauth
 			xwayland-satellite
 		];
 	};
-
-	services.locate.enable = true;
 
 	fonts = {
 		enableDefaultPackages = true;
@@ -282,44 +257,28 @@ in
 	sops = {
 		defaultSopsFile = ../secrets.yaml;
 		age.keyFile = "/var/lib/sops-nix/key.txt";
-		secrets = {
-			ssh_public_key = {
-				mode = "0444";
+		secrets =
+			let
+				userSecret = mode: {
+					inherit mode;
+					owner = userName;
+					group = "users";
+				};
+				privateFile =
+					path:
+					userSecret "0600"
+					// {
+						inherit path;
+					};
+			in
+			{
+				ssh_public_key.mode = "0444";
+				enc_priv_ssh_private_key = privateFile "${userHome}/.ssh/id_ed25519";
+				enc_priv_git_credentials = privateFile "${userHome}/.config/git/credentials";
+				enc_priv_croc_pass = userSecret "0400";
+				enc_priv_croc_secret = userSecret "0400";
+				enc_priv_headscale_widget_token = userSecret "0400";
+				enc_priv_discord_widget_token = userSecret "0400";
 			};
-			enc_priv_ssh_private_key = {
-				owner = userName;
-				group = "users";
-				mode = "0600";
-				path = "${userHome}/.ssh/id_ed25519";
-			};
-			enc_priv_git_credentials = {
-				owner = userName;
-				group = "users";
-				mode = "0600";
-				path = "${userHome}/.config/git/credentials";
-			};
-			enc_priv_croc_pass = {
-				owner = userName;
-				group = "users";
-				mode = "0400";
-			};
-			enc_priv_croc_secret = {
-				owner = userName;
-				group = "users";
-				mode = "0400";
-			};
-			enc_priv_headscale_widget_token = {
-				owner = userName;
-				group = "users";
-				mode = "0400";
-			};
-			enc_priv_discord_widget_token = {
-				owner = userName;
-				group = "users";
-				mode = "0400";
-			};
-		};
 	};
-
-	services.openssh.authorizedKeysFiles = [ "/run/secrets/ssh_public_key" ];
 }

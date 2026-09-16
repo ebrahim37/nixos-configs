@@ -48,7 +48,7 @@
 	services.fstrim.enable = true;
 
 	environment.systemPackages = with pkgs; [
-		clang-tools
+		clang-tools # nvim mason can't install clang on ARM64
 		spice-vdagent
 	];
 }

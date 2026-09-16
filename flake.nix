@@ -1,23 +1,19 @@
 {
 	inputs = {
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
 		infra-template = {
 			url = "github:ebrahim37/infra-template";
 			flake = false;
 		};
-
 		home-manager = {
 			url = "github:nix-community/home-manager";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-
-		# don't follow nixpkgs because noctalia has own binary cache
+		# Don't follow nixpkgs because Noctalia has its own binary cache.
 		noctalia.url = "github:noctalia-dev/noctalia/cachix";
 	};
 
@@ -27,70 +23,71 @@
 	};
 
 	outputs =
-		inputs@{home-manager, infra-template, nixpkgs, self, sops-nix, ...}:
+		inputs@{ home-manager, infra-template, nixpkgs, self, sops-nix, ... }:
 		let
 			secretLines = builtins.filter builtins.isString (
 				builtins.split "\n" (builtins.readFile ./secrets.yaml)
 			);
-			getPublicVar = name:
+			getPublicVar =
+				name:
 				let
-					values = builtins.filter (value: value != null) (
-						builtins.map (
-							line:
-							let match = builtins.match "${name}: (.*)" line;
-							in if match == null then null else builtins.head match
-						) secretLines
-					);
+					values = builtins.concatMap (
+						line:
+						let
+							match = builtins.match "${name}: (.*)" line;
+						in
+						if match == null then [ ] else match
+					) secretLines;
 				in
 				if builtins.length values == 1 then
 					builtins.head values
 				else
 					throw "Expected exactly one ${name} entry in secrets.yaml";
-			publicVars = {
-				user_short_name = getPublicVar "user_short_name";
-				user_long_name = getPublicVar "user_long_name";
-				git_email = getPublicVar "git_email";
+			publicVars = builtins.mapAttrs (name: _: getPublicVar name) {
+				user_short_name = null;
+				user_long_name = null;
+				git_email = null;
 			};
-			mkHost = { hostName, system }:
-			let
-				pkgs = nixpkgs.legacyPackages.${system};
-				homeFiles = pkgs.runCommand "home-files" { } ''
-					mkdir -p "$out/.config" "$out/scripts"
-					cp -R ${infra-template}/cnc-shared/home/.config/nvim "$out/.config/nvim"
-					cp -R ${infra-template}/cnc-shared/scripts/common/. "$out/scripts/"
-					chmod -R u+w "$out"
+			mkHost =
+				hostName: system:
+				let
+					homeFiles = nixpkgs.legacyPackages.${system}.runCommand "home-files" { } ''
+						mkdir -p "$out/.config" "$out/scripts"
+						cp -R ${infra-template}/cnc-shared/home/.config/nvim "$out/.config/nvim"
+						cp -R ${infra-template}/cnc-shared/scripts/common/. "$out/scripts/"
+						chmod -R u+w "$out"
 
-					cp -R ${./files}/. "$out/"
-					find "$out/scripts" -type f -exec chmod 0755 {} +
-				'';
-			in
-			nixpkgs.lib.nixosSystem {
-				inherit system;
-				specialArgs = { inherit homeFiles inputs publicVars self; };
-				modules = [
-					sops-nix.nixosModules.sops
-					home-manager.nixosModules.home-manager
-					./modules/common.nix
-					(./modules + "/${hostName}.nix")
-					{
-						home-manager = {
-							useGlobalPkgs = true;
-							useUserPackages = true;
-							backupFileExtension = "hm-backup";
-							extraSpecialArgs = { inherit homeFiles inputs publicVars self; };
-							sharedModules = [
-								inputs.noctalia.homeModules.default
-							];
-							users.${publicVars.user_short_name} = import ./modules/hm-config.nix;
-						};
-					}
-				];
-			};
+						cp -R ${./files}/. "$out/"
+						find "$out/scripts" -type f -exec chmod 0755 {} +
+					'';
+					specialArgs = {
+						inherit homeFiles inputs publicVars self;
+					};
+				in
+				nixpkgs.lib.nixosSystem {
+					inherit specialArgs system;
+					modules = [
+						sops-nix.nixosModules.sops
+						home-manager.nixosModules.home-manager
+						./modules/common.nix
+						(./modules + "/${hostName}.nix")
+						{
+							home-manager = {
+								useGlobalPkgs = true;
+								useUserPackages = true;
+								backupFileExtension = "hm-backup";
+								extraSpecialArgs = specialArgs;
+								sharedModules = [ inputs.noctalia.homeModules.default ];
+								users.${publicVars.user_short_name} = import ./modules/hm-config.nix;
+							};
+						}
+					];
+				};
 		in
 		{
-			nixosConfigurations = {
-				pc-qemu = mkHost { hostName = "pc-qemu"; system = "x86_64-linux"; };
-				mba-utm = mkHost { hostName = "mba-utm"; system = "aarch64-linux"; };
+			nixosConfigurations = builtins.mapAttrs mkHost {
+				pc-qemu = "x86_64-linux";
+				mba-utm = "aarch64-linux";
 			};
 		};
 }

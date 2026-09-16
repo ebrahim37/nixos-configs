@@ -45,11 +45,21 @@ After install, you can rebuild the current host with `rebuild-nixos`.
 - `Super+Backspace`: choose a host with Fuzzel and attach to remote Neovim
 - `Super+Space`: Noctalia launcher
 - `Super+V`: Noctalia clipboard history
-- `Super+F`: fullscreen
+- `Super+F`: maximize the focused column
+- `Super+M`: maximize the focused window to the screen edges
+- `Super+Shift+F`: fullscreen the focused window
+- `Super+Shift+P`: Noctalia session panel
 - `Super+L`: lock
 - `Super+S`: Noctalia control center
 - `Super+,`: Noctalia settings
 - `Super+Q`: close window
+- `Super+Left` / `Super+Right`: focus the column to the left or right
+- `Super+Up` / `Super+Down`: focus the window above or below
+- `Super+Shift+Left` / `Super+Shift+Right`: move the focused column left or right
+- `Super+Shift+Up` / `Super+Shift+Down`: move the focused window up or down
+- `Super+mouse wheel`: focus the workspace above or below
+- `Alt+Tab`: Noctalia window switcher
+- `Super+Tab`: Niri window switcher
 - `Super+1` through `Super+9`: select workspace
 - `Super+Shift+1` through `Super+Shift+9`: move window to workspace
 - `Super+J`: open Stremio Enhanced

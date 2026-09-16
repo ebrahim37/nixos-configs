@@ -8,19 +8,35 @@
 }:
 let
 	userName = publicVars.user_short_name;
-	ntfyTopics = [ "email" "beszel" "monitor" "omp" ];
+	recursiveSource = source: {
+		inherit source;
+		recursive = true;
+	};
 	ntfyConfig = (pkgs.formats.yaml { }).generate "ntfy-client.yml" {
 		default-host = "http://100.64.0.1:2586";
 		subscribe = map (topic: {
 			inherit topic;
 			command = "/home/${userName}/scripts/ntfy-noctalia-notify";
-		}) ntfyTopics;
+		}) [ "email" "beszel" "monitor" "omp" ];
 	};
+	workspaceBinds =
+		modifier: action:
+		builtins.concatStringsSep "\n" (
+			map (
+				workspace: "Mod+${modifier}${workspace} { ${action} ${workspace}; }"
+			) [ "1" "2" "3" "4" "5" "6" "7" "8" "9" ]
+		);
+	mimeAppsFor =
+		application: types:
+		builtins.listToAttrs (
+			map (name: {
+				inherit name;
+				value = [ application ];
+			}) types
+		);
 in
 {
-	dconf.settings."org/gnome/desktop/interface" = {
-		color-scheme = "prefer-dark";
-	};
+	dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
 	home = {
 		username = userName;
@@ -35,25 +51,15 @@ in
 			ntfy-sh
 			xdg-utils
 		];
-
 		file = {
-			".omp/agent/extensions" = {
-				source = inputs.infra-template + "/cnc-shared/home/.config/omp/extensions";
-				recursive = true;
-			};
+			".omp/agent/extensions" = recursiveSource (
+				inputs.infra-template + "/cnc-shared/home/.config/omp/extensions"
+			);
 			".omp/shared.yml".source = inputs.infra-template + "/cnc-shared/home/.config/omp/shared.yml";
-			"scripts" = {
-				source = homeFiles + "/scripts";
-				recursive = true;
-			};
-			".local/share/noctalia/plugins/homelab-status" = {
-				source = ../files/noctalia-plugins/homelab-status;
-				recursive = true;
-			};
-			".config/nvim" = {
-				source = homeFiles + "/.config/nvim";
-				recursive = true;
-			};
+			"scripts" = recursiveSource (homeFiles + "/scripts");
+			".local/share/noctalia/plugins/homelab-status" =
+				recursiveSource ../files/noctalia-plugins/homelab-status;
+			".config/nvim" = recursiveSource (homeFiles + "/.config/nvim");
 			".ssh/config".source = inputs.infra-template + "/cnc-shared/ssh_config";
 		};
 	};
@@ -195,156 +201,143 @@ in
 
 	xdg = {
 		enable = true;
-		configFile."ntfy/client.yml".source = ntfyConfig;
-		configFile."noctalia/config.toml".source = ../files/noctalia-config.toml;
-		configFile."niri/config.kdl".text = ''
-			input {
-				touchpad {
-					tap
-					natural-scroll
+		configFile = {
+			"ntfy/client.yml".source = ntfyConfig;
+			"noctalia/config.toml".source = ../files/noctalia-config.toml;
+			"niri/config.kdl".text = ''
+				input {
+					touchpad {
+						tap
+						natural-scroll
+					}
+					focus-follows-mouse max-scroll-amount="0%"
 				}
-				focus-follows-mouse max-scroll-amount="0%"
-			}
 
-			layout {
-				gaps 10
-				focus-ring {
-					off
+				layout {
+					gaps 10
+					focus-ring {
+						off
+					}
+					border {
+						width 2
+						active-color "#89b4fa"
+						inactive-color "#45475a"
+					}
 				}
-				border {
-					width 2
-					active-color "#89b4fa"
-					inactive-color "#45475a"
+
+				prefer-no-csd
+
+				cursor {
+					xcursor-theme "Bibata-Modern-Ice"
+					xcursor-size 24
 				}
-			}
 
-			prefer-no-csd
-
-			cursor {
-				xcursor-theme "Bibata-Modern-Ice"
-				xcursor-size 24
-			}
-
-			hotkey-overlay {
-				skip-at-startup
-			}
-
-			screenshot-path "~/Downloads/Screenshot %Y-%m-%d %H-%M-%S.png"
-
-			blur {
-				passes 3
-				offset 3
-				saturation 1.17
-			}
-
-			window-rule {
-				geometry-corner-radius 12
-				clip-to-geometry true
-			}
-
-			window-rule {
-				match app-id=r#"firefox-devedition$"# title="^Picture-in-Picture$"
-				open-floating true
-			}
-
-			window-rule {
-				match app-id=r#"^(firefox-devedition|org\.gnome\.Nautilus)$"#
-				open-maximized-to-edges false
-			}
-
-			layer-rule {
-				match namespace=r#"^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"#
-				background-effect {
-					xray false
+				hotkey-overlay {
+					skip-at-startup
 				}
-			}
 
-			binds {
-				Mod+E { spawn "nautilus" "--new-window"; }
-				Mod+B { spawn "firefox-devedition"; }
-				Mod+J { spawn "stremio-enhanced"; }
-				Mod+Return { spawn "footclient"; }
-				Mod+backslash { spawn "ssh-menu"; }
-				Mod+BackSpace { spawn "remote-nvim-menu"; }
-				Mod+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
-				Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
-				Mod+F { maximize-column; }
-				Mod+M { maximize-window-to-edges; }
-				Mod+Shift+F { fullscreen-window; }
-				Mod+Q repeat=false { close-window; }
-				Mod+L { spawn "noctalia" "msg" "session" "lock"; }
-				Mod+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
-				Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
-				Mod+Shift+P { spawn "noctalia" "msg" "panel-toggle" "session"; }
+				screenshot-path "~/Downloads/Screenshot %Y-%m-%d %H-%M-%S.png"
 
-				Mod+Left { focus-column-left; }
-				Mod+Right { focus-column-right; }
-				Mod+Up { focus-window-up; }
-				Mod+Down { focus-window-down; }
-				Mod+Shift+Left { move-column-left; }
-				Mod+Shift+Right { move-column-right; }
-				Mod+Shift+Up { move-window-up; }
-				Mod+Shift+Down { move-window-down; }
+				blur {
+					passes 3
+					offset 3
+					saturation 1.17
+				}
 
-				Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
-				Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+				window-rule {
+					geometry-corner-radius 12
+					clip-to-geometry true
+				}
 
-				Mod+1 { focus-workspace 1; }
-				Mod+2 { focus-workspace 2; }
-				Mod+3 { focus-workspace 3; }
-				Mod+4 { focus-workspace 4; }
-				Mod+5 { focus-workspace 5; }
-				Mod+6 { focus-workspace 6; }
-				Mod+7 { focus-workspace 7; }
-				Mod+8 { focus-workspace 8; }
-				Mod+9 { focus-workspace 9; }
-				Mod+Shift+1 { move-column-to-workspace 1; }
-				Mod+Shift+2 { move-column-to-workspace 2; }
-				Mod+Shift+3 { move-column-to-workspace 3; }
-				Mod+Shift+4 { move-column-to-workspace 4; }
-				Mod+Shift+5 { move-column-to-workspace 5; }
-				Mod+Shift+6 { move-column-to-workspace 6; }
-				Mod+Shift+7 { move-column-to-workspace 7; }
-				Mod+Shift+8 { move-column-to-workspace 8; }
-				Mod+Shift+9 { move-column-to-workspace 9; }
+				window-rule {
+					match app-id=r#"firefox-devedition$"# title="^Picture-in-Picture$"
+					open-floating true
+				}
 
-				Print { screenshot-screen; }
-				Mod+Print { screenshot; }
+				window-rule {
+					match app-id=r#"^(firefox-devedition|org\.gnome\.Nautilus)$"#
+					open-maximized-to-edges false
+				}
 
-				XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-up"; }
-				XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-down"; }
-				XF86AudioMute allow-when-locked=true { spawn "noctalia" "msg" "volume-mute"; }
-				XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia" "msg" "brightness-up"; }
-				XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia" "msg" "brightness-down"; }
-				Alt+Tab repeat=false { spawn "noctalia" "msg" "window-switcher"; }
-			}
-		'';
+				layer-rule {
+					match namespace=r#"^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"#
+					background-effect {
+						xray false
+					}
+				}
+
+				binds {
+					Mod+E { spawn "nautilus" "--new-window"; }
+					Mod+B { spawn "firefox-devedition"; }
+					Mod+J { spawn "stremio-enhanced"; }
+					Mod+Return { spawn "footclient"; }
+					Mod+backslash { spawn "ssh-menu"; }
+					Mod+BackSpace { spawn "remote-nvim-menu"; }
+					Mod+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
+					Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
+					Mod+F { maximize-column; }
+					Mod+M { maximize-window-to-edges; }
+					Mod+Shift+F { fullscreen-window; }
+					Mod+Q repeat=false { close-window; }
+					Mod+L { spawn "noctalia" "msg" "session" "lock"; }
+					Mod+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+					Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
+					Mod+Shift+P { spawn "noctalia" "msg" "panel-toggle" "session"; }
+
+					Mod+Left { focus-column-left; }
+					Mod+Right { focus-column-right; }
+					Mod+Up { focus-window-up; }
+					Mod+Down { focus-window-down; }
+					Mod+Shift+Left { move-column-left; }
+					Mod+Shift+Right { move-column-right; }
+					Mod+Shift+Up { move-window-up; }
+					Mod+Shift+Down { move-window-down; }
+
+					Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+					Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+
+					${workspaceBinds "" "focus-workspace"}
+					${workspaceBinds "Shift+" "move-column-to-workspace"}
+
+					Print { screenshot-screen; }
+					Mod+Print { screenshot; }
+
+					XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-up"; }
+					XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-down"; }
+					XF86AudioMute allow-when-locked=true { spawn "noctalia" "msg" "volume-mute"; }
+					XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia" "msg" "brightness-up"; }
+					XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia" "msg" "brightness-down"; }
+					Alt+Tab repeat=false { spawn "noctalia" "msg" "window-switcher"; }
+				}
+			'';
+		};
 		mimeApps = {
 			enable = true;
-			defaultApplications = {
-				"audio/flac" = [ "vlc.desktop" ];
-				"audio/mpeg" = [ "vlc.desktop" ];
-				"audio/ogg" = [ "vlc.desktop" ];
-				"audio/wav" = [ "vlc.desktop" ];
-
-				"video/mp4" = [ "vlc.desktop" ];
-				"video/mpeg" = [ "vlc.desktop" ];
-				"video/webm" = [ "vlc.desktop" ];
-				"video/x-matroska" = [ "vlc.desktop" ];
-				"video/x-msvideo" = [ "vlc.desktop" ];
-
-				"image/gif" = [ "imv.desktop" ];
-				"image/jpeg" = [ "imv.desktop" ];
-				"image/png" = [ "imv.desktop" ];
-				"image/webp" = [ "imv.desktop" ];
-
-				"inode/directory" = [ "org.gnome.Nautilus.desktop" ];
-
-				"image/svg+xml" = [ "firefox-devedition.desktop" ];
-				"text/html" = [ "firefox-devedition.desktop" ];
-				"x-scheme-handler/http" = [ "firefox-devedition.desktop" ];
-				"x-scheme-handler/https" = [ "firefox-devedition.desktop" ];
-			};
+			defaultApplications =
+				mimeAppsFor "vlc.desktop" [
+					"audio/flac"
+					"audio/mpeg"
+					"audio/ogg"
+					"audio/wav"
+					"video/mp4"
+					"video/mpeg"
+					"video/webm"
+					"video/x-matroska"
+					"video/x-msvideo"
+				]
+				// mimeAppsFor "imv.desktop" [
+					"image/gif"
+					"image/jpeg"
+					"image/png"
+					"image/webp"
+				]
+				// mimeAppsFor "org.gnome.Nautilus.desktop" [ "inode/directory" ]
+				// mimeAppsFor "firefox-devedition.desktop" [
+					"image/svg+xml"
+					"text/html"
+					"x-scheme-handler/http"
+					"x-scheme-handler/https"
+				];
 		};
 	};
 }

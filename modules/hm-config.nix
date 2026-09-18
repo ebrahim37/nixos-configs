@@ -216,7 +216,7 @@ in
 
 				${pkgs.lib.optionalString isMbaUtm ''
 					output "Virtual-1" {
-						mode "2560x1600@60.000"
+						mode "2560x1600@59.987"
 						scale 1.4
 					}
 				''}

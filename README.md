@@ -1,11 +1,8 @@
 # NixOS Configs
 
-This flake defines a config for two hosts:
-
+This flake defines a config for 2 hosts:
 - `pc-qemu`: `x86_64-linux`, QEMU with WHPX on Windows 11, VirtIO devices/GPU, SDL display, and QEMU guest agent.
 - `mba-utm`: `aarch64-linux`, UTM's QEMU backend on an M2 Mac, VirtIO devices/GPU, SPICE agent, and QEMU guest agent.
-
-`modules/common.nix` contains system-wide shared options only; user configuration is isolated in `modules/hm-config.nix`.
 
 ## VM settings
 
@@ -15,15 +12,9 @@ For UTM, create an ARM64 Linux VM with the QEMU backend and hardware virtualizat
 
 TPM enrollment binds to PCR 7. Keep the LUKS passphrase recorded somewhere safe; it is deliberately retained as the recovery path. A firmware, Secure Boot policy, or virtual TPM reset can require that passphrase and a new `systemd-cryptenroll` enrollment.
 
-## Secrets
-
-The installer expects both `secrets.yaml` and `~/.config/sops/age/keys.txt` on the live ISO.
-
-Secret values in `secrets.yaml` are prefixed with `enc_priv_` and these are automatically encrypted by `sops`.
-
 ## Install
 
-From a recent NixOS minimal ISO, clone this repository to `~/nixos-configs`, add the age key and encrypted secrets as described above, then run:
+From a recent NixOS minimal ISO, clone this repository to `~/nixos-configs`, add the age key to `~/.config/sops/age/keys.txt`, then run:
 
 ```sh
 cd ~/nixos-configs
@@ -32,9 +23,9 @@ sudo ./install.sh pc-qemu /dev/vda USERNAME_HERE
 sudo ./install.sh mba-utm /dev/vda USERNAME_HERE
 ```
 
-The third argument must match `user_short_name` in `secrets.yaml`.
+The username must match `user_short_name` in `secrets.yaml`.
 
-After install, you can rebuild the current host with `rebuild-nixos`.
+After install, you can rebuild the config with `rebuild-nixos` and update flake inputs with `update-nixos`.
 
 ## Key bindings
 

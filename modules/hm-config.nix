@@ -8,6 +8,7 @@
 }:
 let
 	userName = publicVars.user_short_name;
+	isMbaUtm = osConfig.networking.hostName == "mba-utm";
 	recursiveSource = source: {
 		inherit source;
 		recursive = true;
@@ -150,7 +151,7 @@ in
 			server.enable = true;
 			settings = {
 				main = {
-					font = "JetBrainsMono Nerd Font:size=11";
+					font = "JetBrainsMono Nerd Font:size=${if isMbaUtm then "7.5" else "11"}";
 					dpi-aware = "yes";
 				};
 				scrollback.lines = 10000;
@@ -212,6 +213,13 @@ in
 					}
 					focus-follows-mouse max-scroll-amount="0%"
 				}
+
+				${pkgs.lib.optionalString isMbaUtm ''
+					output "Virtual-1" {
+						mode "2560x1600@60.000"
+						scale 1.4
+					}
+				''}
 
 				layout {
 					gaps 10

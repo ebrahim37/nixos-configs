@@ -27,6 +27,7 @@
 			"tpm2-device=auto"
 			"tpm2-pcrs=7"
 		];
+		kernelParams = [ "video=Virtual-1:2560x1600@60" ];
 		kernelModules = [
 			"snd_virtio"
 			"virtio_balloon"

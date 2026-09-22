@@ -1,0 +1,10 @@
+default-host: http://100.64.0.1:2586
+subscribe:
+  - topic: email
+    command: '$HOME/scripts/ntfy-noctalia-notify'
+  - topic: beszel
+    command: '$HOME/scripts/ntfy-noctalia-notify'
+  - topic: monitor
+    command: '$HOME/scripts/ntfy-noctalia-notify'
+  - topic: omp
+    command: '$HOME/scripts/ntfy-noctalia-notify'

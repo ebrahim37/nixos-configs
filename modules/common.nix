@@ -1,21 +1,11 @@
 {
 	inputs,
 	pkgs,
-	publicVars,
+	vars,
 	...
 }:
 let
-	userName = publicVars.user_short_name;
-	userHome = "/home/${userName}";
-	stremioEnhanced = pkgs.callPackage ./stremio-enhanced.nix { };
-	systemVim = pkgs.vim-full.overrideAttrs (oldAttrs: {
-		postInstall = (oldAttrs.postInstall or "") + ''
-			cp --dereference "$out/share/vim/vimrc" "$out/share/vim/vimrc.local"
-			chmod u+w "$out/share/vim/vimrc.local"
-			cat ${inputs.infra-template}/cnc-shared/vimrc >> "$out/share/vim/vimrc.local"
-			mv -T "$out/share/vim/vimrc.local" "$out/share/vim/vimrc"
-		'';
-	});
+	userName = vars.user.username;
 in
 {
 	nixpkgs.config.allowUnfree = true;
@@ -96,23 +86,19 @@ in
 	users.users.${userName} = {
 		isNormalUser = true;
 		uid = 1000;
-		description = publicVars.user_long_name;
+		description = vars.user.name;
 		extraGroups = [ "audio" "networkmanager" "podman" "video" "wheel" ];
+		openssh.authorizedKeys.keys = [ vars.user.sshPublicKey ];
 	};
 
-	security = {
-		polkit.enable = true;
-		rtkit.enable = true;
-		sudo = {
-			wheelNeedsPassword = false;
-			extraConfig = ''
-				Defaults env_keep += "SYSTEMD_PAGER"
-			'';
-		};
+	security.sudo = {
+		wheelNeedsPassword = false;
+		extraConfig = ''
+			Defaults env_keep += "SYSTEMD_PAGER"
+		'';
 	};
 
 	services = {
-		gvfs.enable = true;
 		openssh = {
 			enable = true;
 			settings = {
@@ -121,15 +107,7 @@ in
 				KbdInteractiveAuthentication = false;
 				X11Forwarding = true;
 			};
-			authorizedKeysFiles = [ "/run/secrets/ssh_public_key" ];
 		};
-		pipewire = {
-			enable = true;
-			alsa.enable = true;
-			alsa.support32Bit = pkgs.stdenv.hostPlatform.isx86_64;
-			pulse.enable = true;
-		};
-		printing.enable = true;
 		tailscale = {
 			enable = true;
 			useRoutingFeatures = "both";
@@ -139,43 +117,12 @@ in
 				"--exit-node="
 			];
 		};
-		udisks2.enable = true;
-		gnome.gnome-keyring.enable = true;
-		greetd = {
-			enable = true;
-			settings = {
-				initial_session = {
-					user = userName;
-					command = "${pkgs.niri}/bin/niri-session";
-				};
-				default_session = {
-					user = "greeter";
-					command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --cmd ${pkgs.niri}/bin/niri-session";
-				};
-			};
-		};
 		locate.enable = true;
 	};
 
-	hardware = {
-		bluetooth.enable = true;
-		graphics = {
-			enable = true;
-			enable32Bit = pkgs.stdenv.hostPlatform.isx86_64;
-		};
-	};
-
 	programs = {
-		dconf.enable = true;
-		niri.enable = true;
 		nix-ld.enable = true;
 		ssh.setXAuthLocation = true;
-	};
-
-	xdg.portal = {
-		enable = true;
-		xdgOpenUsePortal = true;
-		extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 	};
 
 	virtualisation.podman.enable = true;
@@ -183,13 +130,10 @@ in
 	environment = {
 		variables = {
 			EDITOR = "nvi";
-			NIXOS_OZONE_WL = "1";
 			SYSTEMD_PAGER = "cat";
-			TERMINAL = "footclient";
 		};
 		systemPackages = with pkgs; [
 			age
-			bibata-cursors
 			btop
 			bubblewrap
 			codex
@@ -197,49 +141,26 @@ in
 			cryptsetup
 			ethtool
 			eza
-			feishin
-			file-roller
 			git
 			http-server
-			imv
-			nautilus
 			ncdu
 			neovim
 			nodejs
 			omp
-			pavucontrol
 			pnpm
 			ripgrep
 			screen
 			sops
-			stremioEnhanced
-			systemVim
+			(vim-full.customize {
+				name = "vim";
+				vimrcConfig.customRC = builtins.readFile (inputs.infra-template + "/cnc-shared/vimrc");
+			})
 			unrar
 			unzip
 			uv
-			vlc
 			waypipe
-			wl-clipboard
 			xauth
-			xwayland-satellite
 		];
-	};
-
-	fonts = {
-		enableDefaultPackages = true;
-		packages = with pkgs; [
-			dejavu_fonts
-			font-awesome
-			nerd-fonts.jetbrains-mono
-			noto-fonts
-			noto-fonts-color-emoji
-		];
-		fontconfig.defaultFonts = {
-			monospace = [ "JetBrainsMono Nerd Font" ];
-			sansSerif = [ "Noto Sans" ];
-			serif = [ "Noto Serif" ];
-			emoji = [ "Noto Color Emoji" ];
-		};
 	};
 
 	systemd = {
@@ -249,8 +170,8 @@ in
 			enableUserSlices = true;
 		};
 		tmpfiles.rules = [
-			"d ${userHome}/.ssh 0700 ${userName} users - -"
-			"d ${userHome}/.config/git 0700 ${userName} users - -"
+			"d /home/${userName}/.ssh 0700 ${userName} users - -"
+			"d /home/${userName}/.config/git 0700 ${userName} users - -"
 		];
 	};
 
@@ -264,17 +185,10 @@ in
 					owner = userName;
 					group = "users";
 				};
-				privateFile =
-					path:
-					userSecret "0600"
-					// {
-						inherit path;
-					};
 			in
 			{
-				ssh_public_key.mode = "0444";
-				enc_priv_ssh_private_key = privateFile "${userHome}/.ssh/id_ed25519";
-				enc_priv_git_credentials = privateFile "${userHome}/.config/git/credentials";
+				enc_priv_ssh_private_key = userSecret "0400" // { path = "/home/${userName}/.ssh/id_ed25519"; };
+				enc_priv_git_credentials = userSecret "0600" // { path = "/home/${userName}/.config/git/credentials"; };
 				enc_priv_croc_pass = userSecret "0400";
 				enc_priv_croc_secret = userSecret "0400";
 				enc_priv_headscale_widget_token = userSecret "0400";

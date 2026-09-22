@@ -3,45 +3,15 @@
 	inputs,
 	osConfig,
 	pkgs,
-	publicVars,
+	vars,
 	...
 }:
-let
-	userName = publicVars.user_short_name;
-	isMbaUtm = osConfig.networking.hostName == "mba-utm";
-	recursiveSource = source: {
-		inherit source;
-		recursive = true;
-	};
-	ntfyConfig = (pkgs.formats.yaml { }).generate "ntfy-client.yml" {
-		default-host = "http://100.64.0.1:2586";
-		subscribe = map (topic: {
-			inherit topic;
-			command = "/home/${userName}/scripts/ntfy-noctalia-notify";
-		}) [ "email" "beszel" "monitor" "omp" ];
-	};
-	workspaceBinds =
-		modifier: action:
-		builtins.concatStringsSep "\n" (
-			map (
-				workspace: "Mod+${modifier}${workspace} { ${action} ${workspace}; }"
-			) [ "1" "2" "3" "4" "5" "6" "7" "8" "9" ]
-		);
-	mimeAppsFor =
-		application: types:
-		builtins.listToAttrs (
-			map (name: {
-				inherit name;
-				value = [ application ];
-			}) types
-		);
-in
 {
 	dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
 	home = {
-		username = userName;
-		homeDirectory = "/home/${userName}";
+		username = vars.user.username;
+		homeDirectory = "/home/${vars.user.username}";
 		stateVersion = osConfig.system.stateVersion;
 		sessionPath = [ "$HOME/scripts" ];
 		packages = with pkgs; [
@@ -53,14 +23,23 @@ in
 			xdg-utils
 		];
 		file = {
-			".omp/agent/extensions" = recursiveSource (
-				inputs.infra-template + "/cnc-shared/home/.config/omp/extensions"
-			);
+			".omp/agent/extensions" = {
+				source = inputs.infra-template + "/cnc-shared/home/.config/omp/extensions";
+				recursive = true;
+			};
 			".omp/shared.yml".source = inputs.infra-template + "/cnc-shared/home/.config/omp/shared.yml";
-			"scripts" = recursiveSource (homeFiles + "/scripts");
-			".local/share/noctalia/plugins/homelab-status" =
-				recursiveSource ../files/noctalia-plugins/homelab-status;
-			".config/nvim" = recursiveSource (homeFiles + "/.config/nvim");
+			"scripts" = {
+				source = homeFiles + "/scripts";
+				recursive = true;
+			};
+			".local/share/noctalia/plugins/homelab-status" = {
+				source = ../files/noctalia-plugins/homelab-status;
+				recursive = true;
+			};
+			".config/nvim" = {
+				source = homeFiles + "/.config/nvim";
+				recursive = true;
+			};
 			".ssh/config".source = inputs.infra-template + "/cnc-shared/ssh_config";
 		};
 	};
@@ -151,10 +130,8 @@ in
 			server.enable = true;
 			settings = {
 				main = {
-					font = "JetBrainsMono Nerd Font:size=${if isMbaUtm then "7.5" else "11"}";
-					dpi-aware = "yes";
+					font = "JetBrainsMono Nerd Font:size=11";
 				};
-				scrollback.lines = 10000;
 				cursor.style = "beam";
 			};
 		};
@@ -162,8 +139,8 @@ in
 			enable = true;
 			settings = {
 				user = {
-					name = publicVars.user_long_name;
-					email = publicVars.git_email;
+					name = vars.user.name;
+					email = vars.user.gitEmail;
 				};
 				credential.helper = "store --file ~/.config/git/credentials";
 				init.defaultBranch = "main";
@@ -203,7 +180,7 @@ in
 	xdg = {
 		enable = true;
 		configFile = {
-			"ntfy/client.yml".source = ntfyConfig;
+			"ntfy/client.yml".source = ../files/ntfy-client.yml;
 			"noctalia/config.toml".source = ../files/noctalia-config.toml;
 			"niri/config.kdl".text = ''
 				input {
@@ -214,7 +191,7 @@ in
 					focus-follows-mouse max-scroll-amount="0%"
 				}
 
-				${pkgs.lib.optionalString isMbaUtm ''
+				${pkgs.lib.optionalString (osConfig.networking.hostName == "mba-utm") ''
 					output "Virtual-1" {
 						mode "2560x1600@59.987"
 						scale 1.4
@@ -304,8 +281,24 @@ in
 					Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
 					Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
 
-					${workspaceBinds "" "focus-workspace"}
-					${workspaceBinds "Shift+" "move-column-to-workspace"}
+					Mod+1 { focus-workspace 1; }
+					Mod+2 { focus-workspace 2; }
+					Mod+3 { focus-workspace 3; }
+					Mod+4 { focus-workspace 4; }
+					Mod+5 { focus-workspace 5; }
+					Mod+6 { focus-workspace 6; }
+					Mod+7 { focus-workspace 7; }
+					Mod+8 { focus-workspace 8; }
+					Mod+9 { focus-workspace 9; }
+					Mod+Shift+1 { move-column-to-workspace 1; }
+					Mod+Shift+2 { move-column-to-workspace 2; }
+					Mod+Shift+3 { move-column-to-workspace 3; }
+					Mod+Shift+4 { move-column-to-workspace 4; }
+					Mod+Shift+5 { move-column-to-workspace 5; }
+					Mod+Shift+6 { move-column-to-workspace 6; }
+					Mod+Shift+7 { move-column-to-workspace 7; }
+					Mod+Shift+8 { move-column-to-workspace 8; }
+					Mod+Shift+9 { move-column-to-workspace 9; }
 
 					Print { screenshot-screen; }
 					Mod+Print { screenshot; }
@@ -321,31 +314,26 @@ in
 		};
 		mimeApps = {
 			enable = true;
-			defaultApplications =
-				mimeAppsFor "vlc.desktop" [
-					"audio/flac"
-					"audio/mpeg"
-					"audio/ogg"
-					"audio/wav"
-					"video/mp4"
-					"video/mpeg"
-					"video/webm"
-					"video/x-matroska"
-					"video/x-msvideo"
-				]
-				// mimeAppsFor "imv.desktop" [
-					"image/gif"
-					"image/jpeg"
-					"image/png"
-					"image/webp"
-				]
-				// mimeAppsFor "org.gnome.Nautilus.desktop" [ "inode/directory" ]
-				// mimeAppsFor "firefox-devedition.desktop" [
-					"image/svg+xml"
-					"text/html"
-					"x-scheme-handler/http"
-					"x-scheme-handler/https"
-				];
+			defaultApplications = {
+				"audio/flac" = [ "vlc.desktop" ];
+				"audio/mpeg" = [ "vlc.desktop" ];
+				"audio/ogg" = [ "vlc.desktop" ];
+				"audio/wav" = [ "vlc.desktop" ];
+				"video/mp4" = [ "vlc.desktop" ];
+				"video/mpeg" = [ "vlc.desktop" ];
+				"video/webm" = [ "vlc.desktop" ];
+				"video/x-matroska" = [ "vlc.desktop" ];
+				"video/x-msvideo" = [ "vlc.desktop" ];
+				"image/gif" = [ "imv.desktop" ];
+				"image/jpeg" = [ "imv.desktop" ];
+				"image/png" = [ "imv.desktop" ];
+				"image/webp" = [ "imv.desktop" ];
+				"inode/directory" = [ "org.gnome.Nautilus.desktop" ];
+				"image/svg+xml" = [ "firefox-devedition.desktop" ];
+				"text/html" = [ "firefox-devedition.desktop" ];
+				"x-scheme-handler/http" = [ "firefox-devedition.desktop" ];
+				"x-scheme-handler/https" = [ "firefox-devedition.desktop" ];
+			};
 		};
 	};
 }

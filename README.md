@@ -1,8 +1,8 @@
 # NixOS Configs
 
 This flake defines a config for 2 hosts:
-- `pc-qemu`: `x86_64-linux`, QEMU with WHPX on Windows 11, VirtIO devices/GPU, SDL display, and QEMU guest agent.
-- `mba-utm`: `aarch64-linux`, UTM's QEMU backend on an M2 Mac, VirtIO devices/GPU, SPICE agent, and QEMU guest agent.
+- `pc-qemu`: `x86_64-linux`, QEMU with WHPX on a Windows 11 PC
+- `mba-utm`: `aarch64-linux`, UTM (QEMU) on an M2 Macbook Air
 
 ## VM settings
 
@@ -23,7 +23,7 @@ sudo ./install.sh pc-qemu /dev/vda USERNAME_HERE
 sudo ./install.sh mba-utm /dev/vda USERNAME_HERE
 ```
 
-The username must match `user_short_name` in `secrets.yaml`.
+The username must match `vars.user.username` in `flake.nix`.
 
 After install, you can rebuild the config with `rebuild-nixos` and update flake inputs with `update-nixos`.
 

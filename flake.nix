@@ -13,7 +13,7 @@
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		# Don't follow nixpkgs because Noctalia has its own binary cache.
+		# don't follow nixpkgs because Noctalia has its own binary cache
 		noctalia.url = "github:noctalia-dev/noctalia/cachix";
 	};
 
@@ -23,30 +23,13 @@
 	};
 
 	outputs =
-		inputs@{ home-manager, infra-template, nixpkgs, self, sops-nix, ... }:
+		inputs@{ home-manager, infra-template, nixpkgs, sops-nix, ... }:
 		let
-			secretLines = builtins.filter builtins.isString (
-				builtins.split "\n" (builtins.readFile ./secrets.yaml)
-			);
-			getPublicVar =
-				name:
-				let
-					values = builtins.concatMap (
-						line:
-						let
-							match = builtins.match "${name}: (.*)" line;
-						in
-						if match == null then [ ] else match
-					) secretLines;
-				in
-				if builtins.length values == 1 then
-					builtins.head values
-				else
-					throw "Expected exactly one ${name} entry in secrets.yaml";
-			publicVars = builtins.mapAttrs (name: _: getPublicVar name) {
-				user_short_name = null;
-				user_long_name = null;
-				git_email = null;
+			vars.user = {
+				username = "ebrahim";
+				name = "Ebrahim";
+				gitEmail = "53321702+ebrahim37@users.noreply.github.com";
+				sshPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICADuTaD1i54A/489uTWBSbh3RIo92DPVh8MZ2cGRGF3";
 			};
 			mkHost =
 				hostName: system:
@@ -61,7 +44,7 @@
 						find "$out/scripts" -type f -exec chmod 0755 {} +
 					'';
 					specialArgs = {
-						inherit homeFiles inputs publicVars self;
+						inherit homeFiles inputs vars;
 					};
 				in
 				nixpkgs.lib.nixosSystem {
@@ -70,7 +53,8 @@
 						sops-nix.nixosModules.sops
 						home-manager.nixosModules.home-manager
 						./modules/common.nix
-						(./modules + "/${hostName}.nix")
+						./modules/desktop.nix
+						(./hosts + "/${hostName}.nix")
 						{
 							home-manager = {
 								useGlobalPkgs = true;
@@ -78,16 +62,22 @@
 								backupFileExtension = "hm-backup";
 								extraSpecialArgs = specialArgs;
 								sharedModules = [ inputs.noctalia.homeModules.default ];
-								users.${publicVars.user_short_name} = import ./modules/hm-config.nix;
+								users.${vars.user.username} = import ./modules/home-manager.nix;
 							};
 						}
 					];
 				};
 		in
 		{
-			nixosConfigurations = builtins.mapAttrs mkHost {
-				pc-qemu = "x86_64-linux";
-				mba-utm = "aarch64-linux";
+			nixosConfigurations = {
+				pc-qemu = mkHost "pc-qemu" "x86_64-linux";
+				mba-utm = mkHost "mba-utm" "aarch64-linux";
+			};
+			packages = {
+				x86_64-linux.stremio-enhanced =
+					nixpkgs.legacyPackages.x86_64-linux.callPackage ./packages/stremio-enhanced.nix { };
+				aarch64-linux.stremio-enhanced =
+					nixpkgs.legacyPackages.aarch64-linux.callPackage ./packages/stremio-enhanced.nix { };
 			};
 		};
 }

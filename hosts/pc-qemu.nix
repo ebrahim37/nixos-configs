@@ -20,13 +20,13 @@
 			"virtio_scsi"
 			"xhci_pci"
 		];
+		kernelParams = [ "mitigations=auto" ];
 		kernelModules = [
 			"snd_virtio"
 			"virtio_balloon"
 			"virtio_console"
 			"virtio_gpu"
 		];
-		kernelParams = [ "mitigations=auto" ];
 	};
 
 	services.qemuGuest.enable = true;

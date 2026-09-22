@@ -20,7 +20,7 @@
 			"virtio_scsi"
 			"xhci_pci"
 		];
-		kernelParams = [ "mitigations=auto" ];
+		kernelParams = [ "video=Virtual-1:3440x1440@100" ];
 		kernelModules = [
 			"snd_virtio"
 			"virtio_balloon"

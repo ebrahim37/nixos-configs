@@ -130,7 +130,7 @@
 			server.enable = true;
 			settings = {
 				main = {
-					font = "JetBrainsMono Nerd Font:size=11";
+					font = "JetBrainsMono Nerd Font:size=11.5";
 				};
 				cursor.style = "beam";
 			};

@@ -208,5 +208,40 @@ speaker and microphone devices, and the bridged TAP network.
 ## UTM Setup
 
 <details>
+<summary>UTM application and NixOS VM settings</summary>
+
+### UTM app settings
+
+Before creating the VM:
+
+1. Open **UTM > Settings > Input**.
+2. Enable **Invert Scrolling**.
+
+### Create the VM
+
+1. Click **Create a New Virtual Machine**.
+2. Select **Virtualize**, then **Linux**.
+3. Enable **Hardware OpenGL Acceleration**.
+4. Select the NixOS ARM64 ISO as the boot image.
+5. Set storage to **128 GiB**.
+6. Set the VM name to **NixOS** and finish the wizard.
+
+### Edit the VM settings
+
+Before starting the VM, open its settings and apply:
+
+- **QEMU**
+  - Enable **RNG Device**.
+  - Enable **Balloon Device**.
+  - Disable **Reset UEFI Variables**.
+- **Input**
+  - Enable **Share USB Devices from Host**.
+- **Sharing**
+  - Set **Directory Share Mode** to **None**.
+- **Sound**
+  - Set **Emulated Audio Card** to **virtio-sound-pci**.
+- **Display**
+  - Enable **Retina Mode**.
+  - Disable **Resize Automatically**.
 
 </details>

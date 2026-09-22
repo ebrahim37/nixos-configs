@@ -19,6 +19,10 @@ The username must match `vars.user.username` in `flake.nix`.
 
 After install, you can rebuild the config with `rebuild-nixos` and update flake inputs with `update-nixos`.
 
+To login to (self-hosted) tailnet, run `ts-login` script once.
+
+To prevent gnome keyring from asking for password at boot, run `empty-keyring-password` script once.
+
 ## Key bindings
 
 - `Super+E`: Nautilus

@@ -20,6 +20,7 @@
 			jq
 			libnotify
 			ntfy-sh
+			(python3.withPackages (pythonPackages: [ pythonPackages.dbus-python ]))
 			xdg-utils
 		];
 		file = {

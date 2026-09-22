@@ -208,7 +208,7 @@ speaker and microphone devices, and the bridged TAP network.
 ## UTM Setup
 
 <details>
-<summary>UTM application and NixOS VM settings</summary>
+<summary>UTM application and VM settings</summary>
 
 ### UTM app settings
 
@@ -224,7 +224,7 @@ Before creating the VM:
 3. Enable **Hardware OpenGL Acceleration**.
 4. Select the NixOS ARM64 ISO as the boot image.
 5. Set storage to **128 GiB**.
-6. Set the VM name to **NixOS** and finish the wizard.
+6. Set the VM name (eg. "NixOS") and finish the wizard.
 
 ### Edit the VM settings
 

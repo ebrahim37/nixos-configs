@@ -191,6 +191,12 @@
 					focus-follows-mouse max-scroll-amount="0%"
 				}
 
+				${pkgs.lib.optionalString (osConfig.networking.hostName == "pc-qemu") ''
+					output "Virtual-1" {
+						mode "3440x1440@99.991"
+					}
+				''}
+
 				${pkgs.lib.optionalString (osConfig.networking.hostName == "mba-utm") ''
 					output "Virtual-1" {
 						mode "2560x1600@59.987"

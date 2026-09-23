@@ -242,10 +242,10 @@ Before starting the VM, open its settings and apply:
   - Enable **Share USB Devices from Host**.
 - **Sharing**
   - Set **Directory Share Mode** to **None**.
+- **Display**
+  - Disable **Resize Automatically**.
+  - Enable **Retina Mode**.
 - **Sound**
   - Set **Emulated Audio Card** to **virtio-sound-pci**.
-- **Display**
-  - Enable **Retina Mode**.
-  - Disable **Resize Automatically**.
 
 </details>

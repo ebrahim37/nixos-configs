@@ -29,10 +29,7 @@ in
 			systemd-boot.enable = true;
 			timeout = 1;
 		};
-		initrd = {
-			systemd.enable = true;
-			luks.devices.cryptroot.device = "/dev/disk/by-partlabel/nixos-luks";
-		};
+		initrd.luks.devices.cryptroot.device = "/dev/disk/by-partlabel/nixos-luks";
 		tmp.cleanOnBoot = true;
 		kernel.sysctl = {
 			"vm.swappiness" = 180;

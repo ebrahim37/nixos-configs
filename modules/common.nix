@@ -144,6 +144,7 @@ in
 			eza
 			git
 			http-server
+			kicad
 			ncdu
 			neovim
 			nodejs

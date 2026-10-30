@@ -136,6 +136,7 @@ in
 			age
 			btop
 			bubblewrap
+			claude-code
 			codex
 			croc
 			cryptsetup

@@ -133,7 +133,6 @@ in
 			age
 			btop
 			bubblewrap
-			cargo
 			claude-code
 			codex
 			croc
@@ -149,7 +148,6 @@ in
 			omp
 			pnpm
 			ripgrep
-			rustc
 			screen
 			sops
 			(vim-full.customize {
